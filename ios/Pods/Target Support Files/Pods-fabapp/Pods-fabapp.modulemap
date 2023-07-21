@@ -1,0 +1,6 @@
+module Pods_fabapp {
+  umbrella header "Pods-fabapp-umbrella.h"
+
+  export *
+  module * { export * }
+}

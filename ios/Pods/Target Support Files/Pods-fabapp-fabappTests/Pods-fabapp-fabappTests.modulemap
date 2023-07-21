@@ -1,0 +1,6 @@
+module Pods_fabapp_fabappTests {
+  umbrella header "Pods-fabapp-fabappTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
