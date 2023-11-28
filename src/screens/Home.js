@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import MyCarousel from '../components/MyCarousel';
 import Card from './Card';
 import room1 from '../assests/room1.jpeg';
