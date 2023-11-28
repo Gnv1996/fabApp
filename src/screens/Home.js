@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyCarousel from '../components/MyCarousel';
@@ -29,12 +29,23 @@ import seen3 from '../assests/seen3.webp';
 import seen4 from '../assests/seen4.jpeg';
 import seen5 from '../assests/seen5.jpeg';
 import seen7 from '../assests/seen7.jpeg';
+import {useNavigation} from '@react-navigation/native';
 
 function ExhibitionCenterCard({title, description, imageSource}) {
+  const navigation = useNavigation();
   const handleCardPress = () => {
     console.log('Exhibition center clicked:', title);
-  };
 
+    // Delayed navigation to 'Open' screen
+    setTimeout(() => {
+      navigation.navigate('Open');
+    }, 100);
+
+    // Delayed go back to previous screen
+    setTimeout(() => {
+      navigation.goBack();
+    }, 4000);
+  };
   return (
     <TouchableOpacity onPress={handleCardPress}>
       <View style={styles.imgContain}>
@@ -317,7 +328,6 @@ function HomeScreen() {
           }}>
           <MyCarousel />
         </View>
-
         <View
           style={{
             backgroundColor: '#28231D',

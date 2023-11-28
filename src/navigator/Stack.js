@@ -10,6 +10,7 @@ import Profile from '../screens/Profile';
 import Requirement from '../screens/Requirement';
 import Notification from '../screens/Notification';
 import HomeScreen from '../screens/Home';
+import OpenPage from '../screens/OpenPage';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -62,6 +63,12 @@ function Stacks() {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Requirement" component={Requirement} />
+
+          <Stack.Screen
+            name="Open"
+            component={OpenPage}
+            options={{headerShown: false}}
+          />
         </Stack.Navigator>
       )}
     </>
