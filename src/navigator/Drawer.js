@@ -20,6 +20,7 @@ import Rating from '../screens/Rating';
 import Upload from '../screens/Upload';
 import Response from '../screens/Response';
 import Faq from '../screens/Faq';
+import Practice from '../screens/Practice';
 
 const Drawer = createDrawerNavigator();
 
@@ -254,6 +255,17 @@ function MyDrawer() {
         component={Faq}
         options={{
           drawerLabel: 'FAQ',
+          drawerIcon: ({focused}) => (
+            <Icon name="help-circle" size={35} color="#808080" />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="Product's"
+        component={Practice}
+        options={{
+          drawerLabel: 'E-commerce',
           drawerIcon: ({focused}) => (
             <Icon name="help-circle" size={35} color="#808080" />
           ),
