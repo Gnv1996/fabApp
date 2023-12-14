@@ -11,6 +11,7 @@ import Requirement from '../screens/Requirement';
 import Notification from '../screens/Notification';
 import HomeScreen from '../screens/Home';
 import OpenPage from '../screens/OpenPage';
+import Cart from '../Ecommerce/Cart';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -67,6 +68,11 @@ function Stacks() {
           <Stack.Screen
             name="Open"
             component={OpenPage}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Cart"
+            component={Cart}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
