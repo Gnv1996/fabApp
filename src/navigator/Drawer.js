@@ -267,7 +267,7 @@ function MyDrawer() {
         options={{
           drawerLabel: 'E-commerce',
           drawerIcon: ({focused}) => (
-            <Icon name="help-circle" size={35} color="#808080" />
+            <Icon name="cart-outline" size={35} color="#808080" />
           ),
         }}
       />

@@ -7,22 +7,25 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 
 function Cart({route, navigation}) {
   const {item} = route.params;
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch data for the specific product using its ID
     axios
       .get(`https://fakestoreapi.com/products/${item.id}`)
       .then(res => {
         setData(res.data);
+        setLoading(false);
       })
       .catch(error => {
         console.log(error);
+        setLoading(false);
       });
   }, [item.id]);
 
@@ -32,55 +35,61 @@ function Cart({route, navigation}) {
 
   return (
     <ScrollView>
-      <Text style={styles.heading}>Product Details</Text>
-      <View style={styles.product}>
-        <Image
-          source={{uri: data.image}}
-          style={{
-            width: 250,
-            height: 300,
-            marginLeft: 40,
-            alignItems: 'center',
-          }}
-        />
-        <View style={styles.productAlign}>
-          <Text
-            style={{
-              color: 'black',
-              fontWeight: 'bold',
-              paddingTop: 10,
-              paddingBottom: 10,
-              fontSize: 22,
-              width: 250,
-              marginRight: 10,
-            }}>
-            {data.title}
-          </Text>
-          <Text
-            style={{
-              paddingTop: 7,
-              paddingBottom: 7,
-              color: 'brown',
-              fontWeight: 'bold',
-            }}>
-            {data.category}
-          </Text>
-          <Text
-            style={{
-              color: 'red',
-              fontWeight: 'bold',
-              paddingTop: 7,
-              paddingBottom: 7,
-              fontSize: 25,
-            }}>
-            ₹{data.price}
-          </Text>
-          <Text style={styles.productDescription}>{data.description}</Text>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
-        <Text style={styles.goBackText}>Go Back</Text>
-      </TouchableOpacity>
+      {loading ? (
+        <ActivityIndicator size="large" color="blue" style={{marginTop: 60}} />
+      ) : (
+        <>
+          <Text style={styles.heading}>Product Details</Text>
+          <View style={styles.product}>
+            <Image
+              source={{uri: data.image}}
+              style={{
+                width: 250,
+                height: 300,
+                marginLeft: 40,
+                alignItems: 'center',
+              }}
+            />
+            <View style={styles.productAlign}>
+              <Text
+                style={{
+                  color: 'black',
+                  fontWeight: 'bold',
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                  fontSize: 22,
+                  width: 250,
+                  marginRight: 10,
+                }}>
+                {data.title}
+              </Text>
+              <Text
+                style={{
+                  paddingTop: 7,
+                  paddingBottom: 7,
+                  color: 'brown',
+                  fontWeight: 'bold',
+                }}>
+                {data.category}
+              </Text>
+              <Text
+                style={{
+                  color: 'red',
+                  fontWeight: 'bold',
+                  paddingTop: 7,
+                  paddingBottom: 7,
+                  fontSize: 25,
+                }}>
+                ₹{data.price}
+              </Text>
+              <Text style={styles.productDescription}>{data.description}</Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
+            <Text style={styles.goBackText}>Go Back</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -155,7 +164,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-
   goBackButton: {
     backgroundColor: 'blue',
     borderRadius: 5,

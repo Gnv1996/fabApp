@@ -12,6 +12,7 @@ import Notification from '../screens/Notification';
 import HomeScreen from '../screens/Home';
 import OpenPage from '../screens/OpenPage';
 import Cart from '../Ecommerce/Cart';
+import Buy from '../Ecommerce/Buy';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -73,6 +74,11 @@ function Stacks() {
           <Stack.Screen
             name="Cart"
             component={Cart}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Buy"
+            component={Buy}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
