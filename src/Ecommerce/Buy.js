@@ -29,11 +29,6 @@ function Buy({route, navigation}) {
         setLoading(false);
       });
   }, [item.id]);
-
-  const goBack = () => {
-    navigation.goBack();
-  };
-
   const increaseQuantity = () => {
     setQuantity(quantity + 1);
   };
@@ -58,12 +53,6 @@ function Buy({route, navigation}) {
         />
       ) : (
         <>
-          <View style={styles.btnHead}>
-            <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
-              <Text style={styles.goBackText}>Go Back</Text>
-            </TouchableOpacity>
-          </View>
-
           <Text style={styles.heading}>Buy</Text>
           <View style={styles.productContainer}>
             <View style={styles.productItem}>
@@ -170,22 +159,13 @@ const styles = StyleSheet.create({
     height: 50,
     width: 100,
   },
-  goBackButton: {
-    backgroundColor: 'blue',
-    borderRadius: 5,
-    padding: 10,
-    margin: 10,
-    height: 50,
-    width: 80,
-  },
+
   goBackText: {
     color: 'white',
     marginTop: 7,
     fontWeight: 'bold',
   },
-  btnHead: {
-    marginTop: 40,
-  },
+
   priceTag: {
     color: 'red',
     fontWeight: 'bold',

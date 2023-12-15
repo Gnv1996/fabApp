@@ -74,12 +74,16 @@ function Stacks() {
           <Stack.Screen
             name="Cart"
             component={Cart}
-            options={{headerShown: false}}
+            options={{
+              gestureEnabled: true,
+            }}
           />
           <Stack.Screen
             name="Buy"
             component={Buy}
-            options={{headerShown: false}}
+            options={{
+              gestureEnabled: true,
+            }}
           />
         </Stack.Navigator>
       )}

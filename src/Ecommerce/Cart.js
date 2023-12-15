@@ -29,10 +29,9 @@ function Cart({route, navigation}) {
       });
   }, [item.id]);
 
-  const goBack = () => {
-    navigation.goBack();
+  const movetoBuyHandler = selectedProduct => {
+    navigation.navigate('Buy', {item: selectedProduct});
   };
-
   return (
     <ScrollView>
       {loading ? (
@@ -82,12 +81,25 @@ function Cart({route, navigation}) {
                 }}>
                 ₹{data.price}
               </Text>
+              <Text
+                style={{
+                  color: 'gray',
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                  marginBottom: 5,
+                }}>
+                Description
+              </Text>
               <Text style={styles.productDescription}>{data.description}</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.goBackButton} onPress={goBack}>
-            <Text style={styles.goBackText}>Go Back</Text>
-          </TouchableOpacity>
+          <View style={{alignItems: 'center'}}>
+            <TouchableOpacity
+              style={styles.goBackButton}
+              onPress={() => movetoBuyHandler(item)}>
+              <Text style={styles.goBackText}>Buy Now</Text>
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </ScrollView>
@@ -99,12 +111,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25,
     color: 'black',
-    marginTop: 60,
+    marginTop: 20,
     backgroundColor: 'white',
     padding: 10,
     borderRadius: 10,
   },
-  productContainer: {},
   productItem: {
     flexDirection: 'row',
     marginBottom: 20,
@@ -165,10 +176,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   goBackButton: {
-    backgroundColor: 'blue',
+    backgroundColor: 'red',
     borderRadius: 5,
-    padding: 10,
+    padding: 12,
     margin: 10,
+    width: 340,
   },
   goBackText: {
     color: 'white',
