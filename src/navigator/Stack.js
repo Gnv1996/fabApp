@@ -13,6 +13,7 @@ import HomeScreen from '../screens/Home';
 import OpenPage from '../screens/OpenPage';
 import Cart from '../Ecommerce/Cart';
 import Buy from '../Ecommerce/Buy';
+import Payment from '../Ecommerce/Payment';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -81,6 +82,13 @@ function Stacks() {
           <Stack.Screen
             name="Buy"
             component={Buy}
+            options={{
+              gestureEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="Payment"
+            component={Payment}
             options={{
               gestureEnabled: true,
             }}

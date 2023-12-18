@@ -40,7 +40,8 @@ function Buy({route, navigation}) {
   };
 
   const goContinue = () => {
-    Alert.alert('waiting');
+    const totalPrice = (data.price * quantity).toFixed(2);
+    navigation.navigate('Payment', {totalPrice});
   };
 
   return (
