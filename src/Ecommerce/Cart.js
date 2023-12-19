@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
+  Alert,
   ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import axios from 'axios';
 function Cart({route, navigation}) {
   const {item} = route.params;
   const [data, setData] = useState([]);
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,77 +29,80 @@ function Cart({route, navigation}) {
         setLoading(false);
       });
   }, [item.id]);
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const removeFromCart = item => {
+    navigation.navigate('Commerce');
+    Alert.alert('Remove Successfully!');
+  };
 
   const movetoBuyHandler = selectedProduct => {
     navigation.navigate('Buy', {item: selectedProduct});
   };
+
   return (
     <ScrollView>
       {loading ? (
-        <ActivityIndicator size="large" color="blue" style={{marginTop: 60}} />
+        <ActivityIndicator
+          size="large"
+          color="orange"
+          style={{marginTop: 60}}
+        />
       ) : (
         <>
-          <Text style={styles.heading}>Product Details</Text>
-          <View style={styles.product}>
-            <Image
-              source={{uri: data.image}}
-              style={{
-                width: 250,
-                height: 300,
-                marginLeft: 40,
-                alignItems: 'center',
-              }}
-            />
-            <View style={styles.productAlign}>
-              <Text
-                style={{
-                  color: 'black',
-                  fontWeight: 'bold',
-                  paddingTop: 10,
-                  paddingBottom: 10,
-                  fontSize: 22,
-                  width: 250,
-                  marginRight: 10,
-                }}>
-                {data.title}
-              </Text>
-              <Text
-                style={{
-                  paddingTop: 7,
-                  paddingBottom: 7,
-                  color: 'brown',
-                  fontWeight: 'bold',
-                }}>
-                {data.category}
-              </Text>
-              <Text
-                style={{
-                  color: 'red',
-                  fontWeight: 'bold',
-                  paddingTop: 7,
-                  paddingBottom: 7,
-                  fontSize: 25,
-                }}>
-                ₹{data.price}
-              </Text>
-              <Text
-                style={{
-                  color: 'gray',
-                  fontWeight: 'bold',
-                  fontSize: 18,
-                  marginBottom: 5,
-                }}>
-                Description
-              </Text>
-              <Text style={styles.productDescription}>{data.description}</Text>
+          <View style={styles.productContainer}>
+            <View style={styles.productItem}>
+              <View style={styles.imageQuantity}>
+                <Image source={{uri: data.image}} style={styles.productImage} />
+                <View style={styles.quantityContainer}>
+                  <Text style={styles.quantityLabel}>Qty:-</Text>
+                  <TouchableOpacity onPress={decreaseQuantity}>
+                    <Text style={styles.quantityButton}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.quantityText}>{quantity}</Text>
+                  <TouchableOpacity onPress={increaseQuantity}>
+                    <Text style={styles.quantityButton}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.productDetails}>
+                <Text style={styles.title}>{data.title}</Text>
+                <Text
+                  style={{
+                    paddingTop: 7,
+                    paddingBottom: 7,
+                    color: 'brown',
+                    fontWeight: 'bold',
+                  }}>
+                  {data.category}
+                </Text>
+                <Text style={styles.priceTag}>
+                  ₹{(data.price * quantity).toFixed(1)}{' '}
+                  <Text style={styles.offer}>47% off</Text>
+                </Text>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity
+                    style={styles.goBackButton}
+                    onPress={() => movetoBuyHandler(item)}>
+                    <Text style={styles.goBackText}>Buy Now</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.goBackButton}
+                    onPress={() => removeFromCart(item)}>
+                    <Text style={styles.goBackText}>Remove</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
-          <View style={{alignItems: 'center'}}>
-            <TouchableOpacity
-              style={styles.goBackButton}
-              onPress={() => movetoBuyHandler(item)}>
-              <Text style={styles.goBackText}>Buy Now</Text>
-            </TouchableOpacity>
           </View>
         </>
       )}
@@ -107,14 +111,9 @@ function Cart({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
-  heading: {
-    fontWeight: 'bold',
-    fontSize: 25,
-    color: 'black',
-    marginTop: 20,
-    backgroundColor: 'white',
+  productContainer: {
+    margin: 15,
     padding: 10,
-    borderRadius: 10,
   },
   productItem: {
     flexDirection: 'row',
@@ -123,72 +122,77 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-  product: {
-    backgroundColor: 'white',
-    padding: 10,
-    margin: 20,
-    borderRadius: 10,
-  },
   productImage: {
     width: 120,
-    height: 220,
+    height: 107,
+    resizeMode: 'cover',
   },
   productDetails: {
-    width: 220,
+    width: 210,
     padding: 10,
   },
   title: {
-    fontSize: 27,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
   },
-  productCategory: {
-    color: 'brown',
-    fontWeight: 'bold',
-    paddingTop: 5,
-    paddingBottom: 5,
-  },
-  pricetag: {
-    color: 'red',
-    fontWeight: 'bold',
-    paddingTop: 5,
-    paddingBottom: 5,
-    fontSize: 22,
-  },
-  productDescription: {
-    color: 'black',
-  },
-  btnProduct: {
+  quantityContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 10,
   },
-  btn: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 10,
-    margin: 6,
-    padding: 10,
-    width: 84,
-    height: 40,
+  quantityLabel: {
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: 18,
   },
-  btnText: {
+  quantityButton: {
+    fontSize: 15,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  quantityText: {
+    paddingHorizontal: 10,
+    fontSize: 18,
+    color: 'black',
+  },
+  goButton: {
+    backgroundColor: '#FFA500',
+    borderRadius: 5,
+    padding: 15,
+    margin: 10,
+    height: 50,
+    width: 100,
+  },
+
+  goBackText: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   goBackButton: {
     backgroundColor: 'red',
-    borderRadius: 5,
-    padding: 12,
-    margin: 10,
-    width: 340,
+    padding: 10,
+    width: '45%',
+    margin: 5,
+    borderRadius: 10,
   },
-  goBackText: {
-    color: 'white',
-    textAlign: 'center',
+
+  priceTag: {
+    color: 'red',
     fontWeight: 'bold',
+    paddingTop: 7,
+    paddingBottom: 7,
+    fontSize: 25,
   },
-  productAlign: {
-    margin: 20,
+  offer: {
+    color: 'green',
+    fontWeight: 'bold',
+    fontSize: 22,
+  },
+  imageQuantity: {
+    flexDirection: 'column',
   },
 });
 

@@ -14,6 +14,7 @@ import OpenPage from '../screens/OpenPage';
 import Cart from '../Ecommerce/Cart';
 import Buy from '../Ecommerce/Buy';
 import Payment from '../Ecommerce/Payment';
+import Commerce from '../Ecommerce/Commerce';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -92,6 +93,11 @@ function Stacks() {
             options={{
               gestureEnabled: true,
             }}
+          />
+          <Stack.Screen
+            name="Commerce"
+            component={Commerce}
+            options={{headerShown: false}}
           />
         </Stack.Navigator>
       )}

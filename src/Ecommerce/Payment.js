@@ -36,10 +36,7 @@ export default function Payment({route}) {
       });
 
       if (paymentResult.success) {
-        Alert.alert(
-          'Payment Successful Bugu babu',
-          'Thank you for your purchase!',
-        );
+        Alert.alert('Payment Successful..!', 'Thank you for your purchase!');
       } else {
         Alert.alert(
           'Payment Failed',
