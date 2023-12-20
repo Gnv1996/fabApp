@@ -15,7 +15,7 @@ const processPayment = async paymentDetails => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve({success: true});
-    }, 2000);
+    }, 1000);
   });
 };
 
@@ -117,6 +117,12 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
     height: 200,
     resizeMode: 'contain',
+  },
+  title: {
+    fontSize: 20,
+    padding: 15,
+    fontWeight: 'bold',
+    color: 'black',
   },
   input: {
     height: 50,
