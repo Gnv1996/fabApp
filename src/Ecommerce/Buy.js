@@ -90,7 +90,7 @@ function Buy({route, navigation}) {
               </Text>
 
               <View style={styles.quantityContainer}>
-                <Text style={styles.quantityLabel}>Quantity:</Text>
+                <Text style={styles.quantityLabel}>Qty:-</Text>
                 <TouchableOpacity onPress={decreaseQuantity}>
                   <Text style={styles.quantityButton}>-</Text>
                 </TouchableOpacity>
@@ -173,6 +173,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 18,
     paddingRight: 7,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   quantityButton: {
     fontSize: 20,
