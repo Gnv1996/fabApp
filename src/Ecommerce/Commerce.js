@@ -131,14 +131,15 @@ const styles = StyleSheet.create({
   },
   btnProduct: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   btn: {
     backgroundColor: 'red',
     padding: 10,
     borderRadius: 10,
-    margin: 6,
-    width: 84,
+    width: 92,
     height: 40,
+    marginTop: 6,
   },
   btnText: {
     color: 'white',
