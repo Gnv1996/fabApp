@@ -1906,11 +1906,6 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@stripe/stripe-react-native@^0.30.0":
-  "integrity" "sha512-uh8XKUA7jmvr/10vf9eCTaLJ3xQ/3IFPpW+oQz2OEi1hUF2gOAEyZU6IDjMu23FX7aYlubBzgtN+iZfP5zuHEQ=="
-  "resolved" "https://registry.npmjs.org/@stripe/stripe-react-native/-/stripe-react-native-0.30.0.tgz"
-  "version" "0.30.0"
-
 "@tsconfig/react-native@^3.0.0":
   "integrity" "sha512-F7IoHEqf741lut4Z2K+IkWQRvXAhBiZMeY5L7BysG7Z2Z3MlIyFR+AagD8jQ/CqC1vowGnRwfLjeuwIpaeoJxA=="
   "resolved" "https://registry.npmjs.org/@tsconfig/react-native/-/react-native-3.0.2.tgz"
@@ -6110,13 +6105,6 @@
   dependencies:
     "find-up" "^4.0.0"
 
-"pkg-dir@^5.0.0":
-  "integrity" "sha512-NPE8TDbzl/3YQYY7CSS228s3g2ollTFnc+Qi3tqmqJp9Vg2ovUpixcJEo2HJScN2Ez+kEaal6y70c0ehqJBJeA=="
-  "resolved" "https://registry.npmjs.org/pkg-dir/-/pkg-dir-5.0.0.tgz"
-  "version" "5.0.0"
-  dependencies:
-    "find-up" "^5.0.0"
-
 "prelude-ls@^1.2.1":
   "integrity" "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="
   "resolved" "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz"
@@ -6385,13 +6373,10 @@
     "prop-types" "^15.6.2"
     "react-native-iphone-x-helper" "^1.0.3"
 
-"react-native-permissions@^3.8.4":
-  "integrity" "sha512-tJq+5eNqu8Y1PpmuSVMjQtW8E7YJbQ0LSbZ1o9KjgF7etgYmBSZeCR138x715vyZUAtwuecV+ybEM9z8dDs76Q=="
-  "resolved" "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-3.8.4.tgz"
-  "version" "3.8.4"
-  dependencies:
-    "picocolors" "^1.0.0"
-    "pkg-dir" "^5.0.0"
+"react-native-permissions@^3.10.1":
+  "integrity" "sha512-Gc5BxxpjZn4QNUDiVeHOO0vXh3AH7ToolmwTJozqC6DsxV7NAf3ttap+8BSmzDR8WxuAM3Cror+YNiBhHJx7/w=="
+  "resolved" "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-3.10.1.tgz"
+  "version" "3.10.1"
 
 "react-native-ratings@8.0.4":
   "integrity" "sha512-Xczu5lskIIRD6BEdz9A0jDRpEck/SFxRqiglkXi0u67yAtI1/pcJC76P4MukCbT8K4BPVl+42w83YqXBoBRl7A=="
@@ -6435,6 +6420,11 @@
   dependencies:
     "prop-types" "^15.6.1"
     "react-addons-shallow-compare" "15.6.2"
+
+"react-native-table-component@^1.2.2":
+  "integrity" "sha512-7bbsi5431iWcjj3toASh8lFHGi6AG/+MTd4M7GuksXKxx/CFs/Qwv1Ys7D2wgyuYKe3hxWNfSVrteFj0tOYXYw=="
+  "resolved" "https://registry.npmjs.org/react-native-table-component/-/react-native-table-component-1.2.2.tgz"
+  "version" "1.2.2"
 
 "react-native-vector-icons@^10.0.0", "react-native-vector-icons@>7.0.0":
   "integrity" "sha512-efMOVbZIebY8RszZPzPBoXi9pvD/NFYmjIDYxRoc9LYSzV8rMJtT8FfcO2hPu85Rn2x9xktha0+qn0B7EqMAcQ=="

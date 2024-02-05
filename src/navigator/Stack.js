@@ -1,4 +1,3 @@
-// import 'react-native-gesture-handler';
 import React, {useContext, useState, useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from '../screens/Login';
@@ -10,11 +9,16 @@ import Profile from '../screens/Profile';
 import Requirement from '../screens/Requirement';
 import Notification from '../screens/Notification';
 import HomeScreen from '../screens/Home';
-import OpenPage from '../screens/OpenPage';
-import Cart from '../Ecommerce/Cart';
-import Buy from '../Ecommerce/Buy';
-import Payment from '../Ecommerce/Payment';
-import Commerce from '../Ecommerce/Commerce';
+import UserInfo from '../screens/UserInfo';
+import AutoExpo from '../expo/AutoExpo';
+import PlastIndia from '../expo/PlastIndia';
+import Aahar from '../expo/Aahar';
+import TradeFair from '../expo/TradeFair';
+import AaharUpdate from '../admin/AaharUpdate';
+import PlastUpdate from '../admin/PlastUpdate';
+import AutoUpdate from '../admin/AutoUpdate';
+import TradeUpdate from '../admin/TradeUpdate';
+import AdminScreen from '../admin/AdminScreen';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -67,38 +71,16 @@ function Stacks() {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Requirement" component={Requirement} />
-
-          <Stack.Screen
-            name="Open"
-            component={OpenPage}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Cart"
-            component={Cart}
-            options={{
-              gestureEnabled: true,
-            }}
-          />
-          <Stack.Screen
-            name="Buy"
-            component={Buy}
-            options={{
-              gestureEnabled: true,
-            }}
-          />
-          <Stack.Screen
-            name="Payment"
-            component={Payment}
-            options={{
-              gestureEnabled: true,
-            }}
-          />
-          <Stack.Screen
-            name="Commerce"
-            component={Commerce}
-            options={{headerShown: false}}
-          />
+          <Stack.Screen name="ReqForm" component={UserInfo} />
+          <Stack.Screen name="AutoExpo" component={AutoExpo} />
+          <Stack.Screen name="TradeFair" component={TradeFair} />
+          <Stack.Screen name="PlastIndia" component={PlastIndia} />
+          <Stack.Screen name="Aahar" component={Aahar} />
+          <Stack.Screen name="AaharUpdate" component={AaharUpdate} />
+          <Stack.Screen name="PlastIndiaUpdate" component={PlastUpdate} />
+          <Stack.Screen name="AutoUpdate" component={AutoUpdate} />
+          <Stack.Screen name="TradeUpdate" component={TradeUpdate} />
+          <Stack.Screen name="AllData" component={AdminScreen} />
         </Stack.Navigator>
       )}
     </>

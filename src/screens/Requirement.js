@@ -1,130 +1,178 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   Alert,
   ScrollView,
 } from 'react-native';
+import {Table, Row} from 'react-native-table-component';
+import axios from 'axios'; // Import Axios
 import colors from '../styles/colors';
 
 function Requirement() {
-  const [budget, setBudget] = useState('');
+  const [tableData, setTableData] = useState([]);
 
-  const buttonSubmitHandler = () => {
-    setBudget(text => setBudget(text));
-    Alert.alert('Data Send is successfully', budget);
-    setBudget('');
+  useEffect(() => {
+    // Initialize tableData with keys only
+    const initialKeys = [
+      'Size of Stall',
+      'Stall no.',
+      'Color Theme',
+      'Products to display',
+      'Branding',
+      'Wooden Floorings',
+      'Carpet color',
+      'Furniture',
+      'Lighting',
+      'Budget',
+      'Comment',
+      // ... add other keys similarly
+    ];
+
+    setTableData(initialKeys);
+
+    // Fetch data from the API
+    fetchDataFromApi();
+  }, []);
+
+  const fetchDataFromApi = async () => {
+    try {
+      // Replace 'your-api-endpoint' with the actual API endpoint
+      const response = await axios.get('https://api.example.com/data'); // Example API endpoint
+      const apiData = response.data;
+
+      const valuesForKeys = {
+        'Size of Stall': apiData.sizeOfStall,
+        'Stall no.': apiData.stallNo,
+        'Color Theme': apiData.colorTheme,
+        'Products to display': apiData.productsToDisplay,
+        Branding: apiData.branding,
+        'Wooden Floorings': apiData.woodenFlooring,
+        'Carpet color': apiData.carpetColor,
+        Furniture: apiData.furniture,
+        Lighting: apiData.lighting,
+        Budget: apiData.budget,
+        Comment: apiData.comment,
+        // ... add other keys similarly
+      };
+
+      // Create an array of arrays with keys and values
+      const transformedData = tableData.map(key => [key, valuesForKeys[key]]);
+
+      // Update the state with the transformed data
+      setTableData(transformedData);
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+    }
   };
+
+  const buttonAcceptHandler = () => {
+    Alert.alert('You Accepted Fabrication Successfully');
+  };
+
+  const buttonRejectHandler = () => {
+    Alert.alert('You Rejected! Successfully');
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.tableContainer}>
-          <View style={styles.column}>
-            <Text style={styles.cellHeader}>Size of Stall</Text>
-            <Text style={styles.cellHeader}>Stall no.</Text>
-            <Text style={styles.cellHeader}>Color Theme</Text>
-            <Text style={styles.cellHeader}>Products to display</Text>
-            <Text style={styles.cellHeader}>Branding</Text>
-            <Text style={styles.cellHeader}>Carpet color</Text>
-            <Text style={styles.cellHeader}>Furniture</Text>
-            <Text style={styles.cellHeader}>Comment</Text>
-          </View>
-
-          <View style={styles.column}>
-            <Text style={styles.cell}>20 meter</Text>
-            <Text style={styles.cell}>111</Text>
-            <Text style={styles.cell}>red</Text>
-            <Text style={styles.cell}>Steel Product</Text>
-            <Text style={styles.cell}>Vinyl with Sunboard</Text>
-            <Text style={styles.cell}>Light Theme</Text>
-            <Text style={styles.cell}>Large</Text>
-            <Text style={styles.cell}>all ok</Text>
-          </View>
-        </View>
-        <View style={{marginTop: 40}}>
-          <Text
-            style={{
-              fontSize: 25,
-              fontWeight: 'bold',
-              textAlign: 'center',
-            }}>
-            Show Budget
-          </Text>
-          <View style={styles.budget}>
-            <TextInput
-              placeholder="Enter Budget"
-              value={budget}
-              style={styles.input}
-              onChangeText={text => setBudget(text)}
+        <Text style={styles.layoutText}>Exhibitor Requirement</Text>
+        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+          {tableData.map((rowData, index) => (
+            <Row
+              key={index}
+              data={[
+                // Display key on the left and value on the right
+                <Text style={styles.texts}>{rowData}</Text>,
+                <Text style={styles.text}>{rowData[0]}</Text>,
+              ]}
+              style={[styles.row, index % 2 && {backgroundColor: '#f2f2f2'}]}
             />
+          ))}
+        </Table>
 
-            <TouchableOpacity style={styles.btn} onPress={buttonSubmitHandler}>
-              <Text style={styles.btn_Text}>Budget</Text>
-            </TouchableOpacity>
-          </View>
+        <View style={styles.budget}>
+          <TouchableOpacity
+            style={styles.btnAccept}
+            onPress={buttonAcceptHandler}>
+            <Text style={styles.btn_Text}>Accept</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.btnReject}
+            onPress={buttonRejectHandler}>
+            <Text style={styles.btn_Text}>Reject</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
-  tableContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 5,
-    borderBlockColor: 'gray',
-    borderWidth: 1,
-    width: 350,
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 20,
-    borderRadius: 5,
-  },
-  column: {
+  container: {
     flex: 1,
-    paddingHorizontal: 15,
+    padding: 16,
+    paddingTop: 30,
   },
-  btn: {
-    backgroundColor: colors.orange,
-    width: '50%',
+  row: {
+    height: 40,
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+  },
+  text: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: '600',
+    marginTop: 10,
+    color: colors.gray,
+  },
+  texts: {
+    flex: 1,
+    textAlign: 'center',
+    fontWeight: '600',
+    marginTop: 10,
+    color: colors.black,
+  },
+  btnAccept: {
+    backgroundColor: colors.green,
+    flex: 1,
     padding: 10,
     borderRadius: 5,
+    margin: 5,
   },
-  cellHeader: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-
-    paddingVertical: 5,
+  btnReject: {
+    backgroundColor: colors.red,
+    flex: 1,
+    padding: 10,
+    borderRadius: 5,
+    margin: 5,
   },
-  cell: {
-    textAlign: 'center',
-
-    paddingVertical: 5,
-  },
-
   btn_Text: {
     textAlign: 'center',
-    color: 'black',
+    color: colors.white,
     fontWeight: '500',
     fontSize: 20,
   },
   budget: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: 20,
-    gap: 5,
+    marginVertical: 20,
+    justifyContent: 'center',
   },
-  input: {
+  layoutText: {
+    borderWidth: 2,
     borderColor: colors.gray,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-    width: '50%',
+    padding: 15,
+    borderRadius: 10,
+    margin: 20,
+    color: colors.black,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 27,
   },
 });
 

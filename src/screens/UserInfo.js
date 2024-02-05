@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  TextInput,
 } from 'react-native';
 import {CheckBox} from 'react-native-elements';
 import FormInput from '../components/FormInput';
@@ -41,6 +42,7 @@ function UserInfo() {
   const [isCarpetChecked, setIsCarpetClicked] = useState(false);
   const [isFurnitureChecked, setIsFurnitureClicked] = useState(false);
   const [isLightingChecked, setIsLightingClicked] = useState(false);
+  const [comment, SetComment] = useState('');
 
   const Exhibitor = [
     {label: 'Auto Expo', value: 'item1'},
@@ -117,8 +119,8 @@ function UserInfo() {
 
   const lightings = [
     {label: 'White', value: 'White'},
-    {label: 'Boom White', value: 'BoomWhite'},
-   
+    {label: 'Warm White', value: 'WarmWhite'},
+    {label: 'Yellow', value: 'Yellow'},
   ];
 
   const handleItemSelected = itemValue => {
@@ -537,6 +539,18 @@ function UserInfo() {
                 </View>
               ) : null}
             </View>
+            <View style={{marginTop: 10, marginBottom: 20}}>
+              <Text style={styles.labels}>Comment</Text>
+              <TextInput
+                style={styles.input}
+                type="text"
+                placeholder="Any Comment"
+                value={comment}
+                onChangeText={text => SetComment(text)}
+                multiline={true}
+                numberOfLines={6}
+              />
+            </View>
 
             <TouchableOpacity
               style={{
@@ -598,6 +612,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     width: '55%',
+  },
+  input: {
+    height: 90,
+    borderWidth: 1,
+    borderColor: colors.gray,
+    borderRadius: 7,
+    padding: 10,
   },
   label: {
     fontSize: 16,

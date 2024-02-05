@@ -84,3 +84,84 @@ const styles = StyleSheet.create({
   },
 });
 export default Notification;
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   TouchableOpacity,
+//   ScrollView,
+// } from 'react-native';
+// import colors from '../styles/colors';
+// import Icon from 'react-native-vector-icons/Ionicons';
+// import axios from 'axios';
+
+// function Notification({ navigation }) {
+//   const [notifications, setNotifications] = useState([]);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         // Make API call using axios
+//         const response = await axios.get('YOUR_API_ENDPOINT');
+
+//         // Assuming the response.data contains the array of notifications
+//         const apiResponse = response.data;
+
+//         // Update state with new notifications
+//         setNotifications(apiResponse);
+//       } catch (error) {
+//         console.error('Error fetching notifications:', error);
+//       }
+//     };
+
+//     // Fetch data when the component mounts
+//     fetchData();
+//   }, []);
+
+//   const handleViewClick = (id) => {
+//     // Handle click based on notification id, navigate to a specific screen, etc.
+//     console.log(`Clicked on notification with id: ${id}`);
+//   };
+
+//   return (
+//     <ScrollView>
+//       {notifications.map((notification) => (
+//         <TouchableOpacity
+//           key={notification.id}
+//           onPress={() => handleViewClick(notification.id)}
+//           style={{
+//             flexDirection: 'row',
+//             padding: 10,
+//             borderBottomColor: colors.gray,
+//             borderBottomWidth: 1,
+//             backgroundColor: colors.white,
+//           }}>
+//           <View style={{ marginTop: 20 }}>
+//             <Icon name="notifications-circle" size={50} color="#808080" />
+//           </View>
+//           <View style={{ padding: 20 }}>
+//             <Text style={styles.titleName}>{notification.title}</Text>
+//             <Text style={styles.titlePostion}>{notification.description}</Text>
+//           </View>
+//         </TouchableOpacity>
+//       ))}
+//     </ScrollView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   titleName: {
+//     fontSize: 17,
+//     fontWeight: 'bold',
+//   },
+//   titlePostion: {
+//     fontSize: 15,
+//     color: colors.gray,
+//     marginTop: 2,
+//     marginRight: 40,
+//   },
+// });
+
+// export default Notification;

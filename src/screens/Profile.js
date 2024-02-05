@@ -103,13 +103,15 @@ const Profile = ({navigation}) => {
         const data = response.data.data;
         setUserdetails({
           ...userDetails,
+          editableCompanyName: data.company,
           editableAddress: data.address,
           editableMobile: data.mobile_no,
           editableCity: data.city,
           editableState: data.state,
           editableZipCode: data.zip_code,
+          editableWebsiteLink: data.website_link,
           email: data.email,
-          fullName: data.first_name + ' ' + data.last_name,
+          fullName: data.fullName,
         });
         setLoading(false);
         await AsyncStorage.setItem(
@@ -126,15 +128,14 @@ const Profile = ({navigation}) => {
 
   const handleEditProfile = async () => {
     try {
-      const full_name = userDetails.fullName.split(' ');
       const response = await api.post('profile/', {
-        first_name: full_name[0],
-        last_name: full_name[1],
+        company: userDetails.editableCompanyName,
         mobile_no: userDetails.editableMobile,
         address: userDetails.editableAddress,
         city: userDetails.editableCity,
         state: userDetails.editableState,
         zip_code: userDetails.editableZipCode,
+        website_link: userDetails.editableWebsiteLink,
       });
       console.log(response.data);
       if (response.data.success === false) {
@@ -188,11 +189,11 @@ const Profile = ({navigation}) => {
             <View>
               <FormInput
                 style={styles.user_info}
-                textHeader={'Full Name'}
-                value={userDetails.fullName}
-                placeholder={'Enter your Full Name'}
+                textHeader={'Company Name'}
+                value={userDetails.company}
+                placeholder={'Enter your Company Name'}
                 onChangeText={text => {
-                  setUserdetails({...userDetails, fullName: text});
+                  setUserdetails({...userDetails, company: text});
                 }}
               />
             </View>
@@ -249,6 +250,15 @@ const Profile = ({navigation}) => {
               value={userDetails.editableZipCode}
               onChangeText={text =>
                 setUserdetails({...userDetails, editableZipCode: text})
+              }
+            />
+            <FormInput
+              style={styles.user_info}
+              textHeader={'Website Link'}
+              placeholder={'Enter your Website'}
+              value={userDetails.editableWebsiteCode}
+              onChangeText={text =>
+                setUserdetails({...userDetails, editableWebsiteCode: text})
               }
             />
             <TouchableOpacity

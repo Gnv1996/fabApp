@@ -7,20 +7,17 @@ import {View, Text, TouchableOpacity, Image, Platform} from 'react-native';
 import {AuthContext} from '../contexts/AuthContext';
 import {useContext, useState, useEffect} from 'react';
 import HomeScreen from '../screens/Home';
-// import About from '../screens/About';
-import Contact from '../screens/Contact';
 import Profile from '../screens/Profile';
 import colors from '../styles/colors';
 import UserInfo from '../screens/UserInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Notification from '../screens/Notification';
-import Status from '../screens/Status';
 import Rating from '../screens/Rating';
 import Upload from '../screens/Upload';
 import Response from '../screens/Response';
-import Faq from '../screens/Faq';
-import Commerce from '../Ecommerce/Commerce';
+import Admin from '../admin/Admin';
+import UpdateScreen from '../screens/UpdateStatus';
 
 const Drawer = createDrawerNavigator();
 
@@ -159,15 +156,26 @@ function MyDrawer() {
       initialRouteName="Home"
       drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
-        name="Home"
+        name="Exhibition"
         component={HomeScreen}
-        options={{
-          drawerLabel: 'Home',
+        options={({navigation}) => ({
+          drawerLabel: 'Exhibition',
           drawerIcon: ({focused}) => (
-            <Icon name="home" size={30} color="#808080" />
+            <Icon name="home" size={30} color="#FFA500" />
           ),
-        }}
+          headerRight: () => (
+            <TouchableOpacity
+              style={{marginRight: 10}}
+              onPress={() => {
+                // Add the logic to navigate to the Notification screen
+                navigation.navigate('Notifications');
+              }}>
+              <Icon name="notifications" size={30} color="#FFA500" />
+            </TouchableOpacity>
+          ),
+        })}
       />
+
       <Drawer.Screen
         name="Profile"
         component={Profile}
@@ -180,38 +188,26 @@ function MyDrawer() {
       />
 
       <Drawer.Screen
-        name="Exhibitions"
+        name="Requirement Form"
         component={UserInfo}
         options={{
-          drawerLabel: 'Exhibitions',
+          drawerLabel: 'Requirement Form',
           drawerIcon: ({focused}) => (
             <Icon name="eye" size={30} color="#808080" />
           ),
         }}
       />
 
-      {userRole == 1 && (
-        <Drawer.Screen
-          name="Notifications"
-          component={Notification}
-          options={{
-            drawerLabel: 'Notifications',
-            drawerIcon: ({focused}) => (
-              <Icon name="notifications" size={30} color="#808080" />
-            ),
-          }}
-        />
-      )}
-      {/* <Drawer.Screen
-        name="Contact"
-        component={Contact}
+      <Drawer.Screen
+        name="Notifications"
+        component={Notification}
         options={{
-          drawerLabel: 'Contact',
+          drawerLabel: 'Notifications',
           drawerIcon: ({focused}) => (
-            <Icon name="people" size={30} color="#808080" />
+            <Icon name="notifications" size={30} color="#808080" />
           ),
         }}
-      /> */}
+      />
 
       {userRole == 2 && (
         <Drawer.Screen
@@ -221,19 +217,6 @@ function MyDrawer() {
             drawerLabel: 'Upload Design',
             drawerIcon: ({focused}) => (
               <Icon name="cloud-upload-outline" size={30} color="#808080" />
-            ),
-          }}
-        />
-      )}
-
-      {userRole == 1 && (
-        <Drawer.Screen
-          name="Status"
-          component={Status}
-          options={{
-            drawerLabel: 'Status',
-            drawerIcon: ({focused}) => (
-              <Icon name="alert-circle" size={30} color="#808080" />
             ),
           }}
         />
@@ -249,25 +232,23 @@ function MyDrawer() {
           ),
         }}
       />
-
       <Drawer.Screen
-        name="FAQ"
-        component={Faq}
+        name="Admin Panel"
+        component={Admin}
         options={{
-          drawerLabel: 'FAQ',
+          drawerLabel: 'Admin Panel',
           drawerIcon: ({focused}) => (
-            <Icon name="help-circle" size={35} color="#808080" />
+            <Icon name="person-circle-outline" size={30} color="#808080" />
           ),
         }}
       />
-
       <Drawer.Screen
-        name="E-Commerce"
-        component={Commerce}
+        name="Update"
+        component={UpdateScreen}
         options={{
-          drawerLabel: 'E-commerce',
+          drawerLabel: 'Update',
           drawerIcon: ({focused}) => (
-            <Icon name="cart-outline" size={35} color="#808080" />
+            <Icon name="sync-outline" size={30} color="#808080" />
           ),
         }}
       />
