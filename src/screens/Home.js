@@ -10,8 +10,6 @@ import React from 'react';
 import colors from '../styles/colors';
 import MyCarousel from '../components/MyCarousel';
 import {useNavigation} from '@react-navigation/native';
-import AaharUpdate from '../admin/AaharUpdate';
-import AutoUpdate from '../admin/AutoUpdate';
 
 function HomeScreen() {
   const navigation = useNavigation();
@@ -30,7 +28,6 @@ function HomeScreen() {
 
   return (
     <ScrollView>
-      <AutoUpdate />
       <View style={styles.container}>
         <View style={{borderRadius: 5, height: 250, borderRadius: 5}}>
           <ImageBackground
