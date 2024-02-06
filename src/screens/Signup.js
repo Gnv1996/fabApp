@@ -15,6 +15,7 @@ import OtpModal from '../components/OtpModal';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -45,6 +46,7 @@ const SignupScreen = ({navigation}) => {
     }
     try {
       const response = await api.post('signup/', {
+        fullName,
         email,
         password: {password: password, confirm_password: confirmPassword},
         role: role.find(r => r.isChecked)?.id || '',
@@ -72,6 +74,12 @@ const SignupScreen = ({navigation}) => {
       <Text style={styles.header}>Sign up</Text>
 
       <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
+      <FormInput
+        textHeader={'Full Name'}
+        value={fullName}
+        onChangeText={text => setFullName(text)}
+        placeholder={'Full Name'}
+      />
       <FormInput
         textHeader={'Email'}
         value={email}

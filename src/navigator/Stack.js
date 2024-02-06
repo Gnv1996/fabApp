@@ -71,16 +71,76 @@ function Stacks() {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Requirement" component={Requirement} />
-          <Stack.Screen name="ReqForm" component={UserInfo} />
-          <Stack.Screen name="AutoExpo" component={AutoExpo} />
-          <Stack.Screen name="TradeFair" component={TradeFair} />
-          <Stack.Screen name="PlastIndia" component={PlastIndia} />
-          <Stack.Screen name="Aahar" component={Aahar} />
-          <Stack.Screen name="aaharUpdate" component={AaharUpdate} />
-          <Stack.Screen name="plastIndiaUpdate" component={PlastUpdate} />
-          <Stack.Screen name="autoUpdate" component={AutoUpdate} />
-          <Stack.Screen name="tradeUpdate" component={TradeUpdate} />
-          <Stack.Screen name="allData" component={AdminScreen} />
+          <Stack.Screen
+            name="ReqForm"
+            component={UserInfo}
+            options={{
+              title: 'Requirement Form',
+            }}
+          />
+          <Stack.Screen
+            name="AutoExpo"
+            component={AutoExpo}
+            options={{
+              title: 'Auto Expo',
+            }}
+          />
+          <Stack.Screen
+            name="TradeFair"
+            component={TradeFair}
+            options={{
+              title: 'Trade Fair',
+            }}
+          />
+          <Stack.Screen
+            name="PlastIndia"
+            component={PlastIndia}
+            options={{
+              title: 'Plast India',
+            }}
+          />
+          <Stack.Screen
+            name="Aahar"
+            component={Aahar}
+            options={{
+              title: 'Aahar',
+            }}
+          />
+          <Stack.Screen
+            name="aaharUpdate"
+            component={AaharUpdate}
+            options={{
+              title: 'Aahar Update',
+            }}
+          />
+          <Stack.Screen
+            name="plastIndiaUpdate"
+            component={PlastUpdate}
+            options={{
+              title: 'Plast India Update',
+            }}
+          />
+          <Stack.Screen
+            name="autoUpdate"
+            component={AutoUpdate}
+            options={{
+              title: 'Auto Update',
+            }}
+          />
+          <Stack.Screen
+            name="tradeUpdate"
+            component={TradeUpdate}
+            options={{
+              title: 'Trade Fair Update',
+            }}
+          />
+          <Stack.Screen
+            name="allData"
+            component={AdminScreen}
+            options={{
+              title: 'Data Update',
+            }}
+          />
         </Stack.Navigator>
       )}
     </>

@@ -233,7 +233,7 @@ function AutoUpdate({navigation}) {
           multiline={true}
           numberOfLines={6}
         />
-        <Text style={styles.heading}>Image Upload</Text>
+        <Text style={styles.headings}>Image Upload</Text>
         <TouchableOpacity
           style={styles.imagePickerButton}
           onPress={uploadImageHandler}>
@@ -253,6 +253,14 @@ function AutoUpdate({navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
+      </View>
+      <View
+        style={{
+          borderBottomColor: colors.gray,
+          borderBottomWidth: 1,
+          padding: 15,
+        }}>
+        <Text style={{color: 'white', textAlign: 'right'}}>to top</Text>
       </View>
     </ScrollView>
   );
@@ -304,6 +312,12 @@ const styles = StyleSheet.create({
   heading: {
     fontWeight: 'bold',
     fontSize: 23,
+    color: colors.black,
+    margin: 10,
+  },
+  headings: {
+    fontWeight: 'bold',
+    fontSize: 18,
     color: colors.black,
     margin: 10,
   },

@@ -12,11 +12,9 @@ import {
 import {CheckBox} from 'react-native-elements';
 import FormInput from '../components/FormInput';
 import colors from '../styles/colors';
-import {Picker} from '@react-native-picker/picker';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {ColorPicker} from 'react-native-color-picker';
-import DropDownPicker from 'react-native-dropdown-picker';
-import {color} from 'react-native-elements/dist/helpers';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import axios from 'axios';
 
 function UserInfo() {
   const [stallSize, setStallSize] = useState('');
@@ -135,23 +133,36 @@ function UserInfo() {
     setSelectedColor(color);
   };
 
-  // formSubmitHandler = async () => {
-  //   try {
-  //     const response = await api.post('signup/', {
-  //       email,
-  //       password: {password: password, confirm_password: confirmPassword},
-  //       role: role.find(r => r.isChecked)?.id || '',
-  //     });
+  const dataSubmitHandler = async () => {
+    // Prepare data to send
+    const dataToSend = {
+      stallSize,
+      stallNumber,
+      selectedColor,
+      carpetColor,
+      products,
+      WoodenFlooring,
+      furniture,
+      lighting,
+      vinylSelected,
+      backlitSelected,
+      vinylSunboardSelected,
+      flexSelected,
+      selectedItem,
+      budget,
+      comment,
+    };
 
-  //     if (response.data.success === false) {
-  //       Alert.alert('Error', response.data.message);
-  //     } else {
-  //       Alert.alert('Success', response.data.message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    try {
+      const response = await axios.post('YOUR_POST_API_ENDPOINT', dataToSend);
+
+      console.log('Response:', response.data);
+      // Handle response according to your requirements
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error
+    }
+  };
 
   return (
     <ScrollView>
@@ -560,7 +571,8 @@ function UserInfo() {
                 alignItems: 'center',
                 borderRadius: 10,
                 marginBottom: 50,
-              }}>
+              }}
+              onPress={dataSubmitHandler}>
               <Text style={{color: colors.white, fontWeight: 'bold'}}>
                 Submit
               </Text>

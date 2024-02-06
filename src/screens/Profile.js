@@ -19,12 +19,14 @@ import {RNCamera} from 'react-native-camera';
 const Profile = ({navigation}) => {
   const [userRole, setUserRole] = useState('');
   const [userDetails, setUserdetails] = useState({
+    editableCompanyName: '',
     editableMobile: '',
     editableAddress: '',
     editableCity: '',
     editableState: '',
     editableZipCode: '',
     fullName: '',
+    editableWebsiteLink: '',
   });
   const [loading, setLoading] = useState(true);
 
@@ -131,15 +133,34 @@ const Profile = ({navigation}) => {
         }
       });
 
-      // Handle the selected image here (upload or use as needed)
-      console.log(doc);
+      // Convert the image to base64 format
+      const base64ImageData = await RNFetchBlob.fs.readFile(doc.uri, 'base64');
 
-      // Also, consider opening the camera here if needed
-      openCamera();
-      openGallery();
-    } catch (err) {
-      console.log('Unhandled promise rejection:', err);
+      // Include the image data in the request payload
+      const formData = new FormData();
+      formData.append('image', base64ImageData);
+
+      // Make the API call to upload the image
+      const response = await axios.post('YOUR_API_ENDPOINT', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          // Include any additional headers required by your API
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload image');
+      }
+
+      // Handle the response as needed
+      const responseData = await response.json();
+      console.log(responseData);
+    } catch (error) {
+      console.log('Error uploading image:', error);
     }
+    openCamera();
+    openGallery();
   };
 
   useEffect(() => {
@@ -240,10 +261,7 @@ const Profile = ({navigation}) => {
             <FormInput
               style={styles.title}
               value={userDetails.fullName}
-              placeholder={'Full Name'}
-              onChangeText={text => {
-                setUserdetails({...userDetails, fullName: text});
-              }}
+              placeholder="Full Name"
             />
           </View>
 
@@ -261,7 +279,7 @@ const Profile = ({navigation}) => {
             </View>
 
             <FormInput
-              style={styles.user_info}
+              style={styles.titleEmail}
               textHeader={'Email'}
               value={userDetails.email}
             />
@@ -388,6 +406,12 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontWeight: 'bold',
     fontSize: 30,
+  },
+  titleEmail: {
+    color: colors.black,
+    fontSize: 20,
+    borderBottomWidth: 1,
+    borderColor: colors.gray,
   },
   detail: {
     color: colors.black,

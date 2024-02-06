@@ -232,7 +232,7 @@ function PlastUpdate({navigation}) {
           multiline={true}
           numberOfLines={6}
         />
-        <Text style={styles.heading}>Image Upload</Text>
+        <Text style={styles.headings}>Image Upload</Text>
         <TouchableOpacity
           style={styles.imagePickerButton}
           onPress={uploadImageHandler}>
@@ -303,6 +303,12 @@ const styles = StyleSheet.create({
   heading: {
     fontWeight: 'bold',
     fontSize: 23,
+    color: colors.black,
+    margin: 10,
+  },
+  headings: {
+    fontWeight: 'bold',
+    fontSize: 18,
     color: colors.black,
     margin: 10,
   },
