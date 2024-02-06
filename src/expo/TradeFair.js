@@ -51,8 +51,8 @@ function TradeFair() {
 
   return (
     <ScrollView>
+      <Text style={styles.layoutText}>Trade Fair</Text>
       <View style={styles.container}>
-        <Text style={styles.layoutText}>Trade Fair</Text>
         <Image
           source={{uri: imageUrl}}
           style={styles.eventImage}
@@ -70,11 +70,7 @@ function TradeFair() {
           <Text style={{fontSize: 17}}>{timePeriod}</Text>
 
           <Text style={styles.label}>Description:-</Text>
-          <Text style={{fontSize: 17}}>
-            {description} Make sure to replace 'imageUrl' and other placeholders
-            with the actual keys used in your API response. Adjust the styles
-            and dimensions according to your application's design.
-          </Text>
+          <Text style={{fontSize: 17}}>{description}</Text>
         </View>
 
         <View style={styles.budget}>

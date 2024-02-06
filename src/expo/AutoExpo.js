@@ -51,8 +51,9 @@ function AutoExpo() {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
         <Text style={styles.layoutText}>Auto Expo</Text>
+      <View style={styles.container}>
+      
         <Image
           source={{uri: imageUrl}}
           style={styles.eventImage}
@@ -70,11 +71,7 @@ function AutoExpo() {
           <Text style={{fontSize: 17}}>{timePeriod}</Text>
 
           <Text style={styles.label}>Description:-</Text>
-          <Text style={{fontSize: 17}}>
-            {description} Make sure to replace 'imageUrl' and other placeholders
-            with the actual keys used in your API response. Adjust the styles
-            and dimensions according to your application's design.
-          </Text>
+          <Text style={{fontSize: 17}}>{description}</Text>
         </View>
 
         <View style={styles.budget}>

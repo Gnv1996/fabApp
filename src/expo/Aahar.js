@@ -51,8 +51,8 @@ function Aahar() {
 
   return (
     <ScrollView>
+      <Text style={styles.layoutText}>Aahar</Text>
       <View style={styles.container}>
-        <Text style={styles.layoutText}>Aahar</Text>
         <Image
           source={{uri: imageUrl}}
           style={styles.eventImage}

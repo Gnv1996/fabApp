@@ -27,35 +27,96 @@ const Profile = ({navigation}) => {
     fullName: '',
   });
   const [loading, setLoading] = useState(true);
-  const requestCameraPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-        {
-          title: 'Camera Permission',
-          message: 'App needs access to your camera for image upload.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    } catch (err) {
-      console.warn(err);
-      return false;
+
+  const requestGalleryPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: 'Cool Photo App Gallery Permission',
+            message:
+              'Cool Photo App needs access to your gallery ' +
+              'so you can pick awesome pictures.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Gallery permission granted');
+        } else {
+          console.log('Gallery permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else if (Platform.OS === 'ios') {
+      // For iOS, the permission is automatically handled by the library
     }
   };
 
-  const openCamera = async () => {
-    const hasCameraPermission = await requestCameraPermission();
-    if (hasCameraPermission) {
-      navigation.navigate('CameraScreen'); // Navigate to the CameraScreen
-    } else {
-      Alert.alert(
-        'Permission Denied',
-        'You need to grant permission to use this feature.',
-      );
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Cool Photo App Camera Permission',
+            message:
+              'Cool Photo App needs access to your camera ' +
+              'so you can take awesome pictures.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Camera permission granted');
+        } else {
+          console.log('Camera permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    } else if (Platform.OS === 'ios') {
+      const cameraStatus = await Permissions.check('photo');
+      if (cameraStatus !== 'authorized') {
+        const permissionStatus = await Permissions.request('photo');
+        if (permissionStatus !== 'authorized') {
+          console.log('Permission to access photos denied');
+        }
+      }
     }
+  };
+
+  const openGallery = async () => {
+    await requestGalleryPermission();
+
+    try {
+      const result = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+      console.log(result);
+    } catch (err) {
+      console.log('Error picking document:', err);
+    }
+  };
+
+  const openCamera = () => {
+    requestCameraPermission();
+    ImagePicker.showImagePicker({}, response => {
+      console.log('Response =', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        // Handle the selected image here (upload or use as needed)
+        console.log(response);
+      }
+    });
   };
 
   const uploadImageHandler = async () => {
@@ -75,6 +136,7 @@ const Profile = ({navigation}) => {
 
       // Also, consider opening the camera here if needed
       openCamera();
+      openGallery();
     } catch (err) {
       console.log('Unhandled promise rejection:', err);
     }

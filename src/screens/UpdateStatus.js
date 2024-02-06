@@ -1,8 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Platform,
+  Permission,
+} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import {RNCamera} from 'react-native-camera';
-import Permissions from 'react-native-permissions';
 
 const UpdateScreen = () => {
   const [image, setImage] = useState(null);

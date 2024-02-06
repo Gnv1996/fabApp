@@ -76,11 +76,11 @@ function Stacks() {
           <Stack.Screen name="TradeFair" component={TradeFair} />
           <Stack.Screen name="PlastIndia" component={PlastIndia} />
           <Stack.Screen name="Aahar" component={Aahar} />
-          <Stack.Screen name="AaharUpdate" component={AaharUpdate} />
-          <Stack.Screen name="PlastIndiaUpdate" component={PlastUpdate} />
-          <Stack.Screen name="AutoUpdate" component={AutoUpdate} />
-          <Stack.Screen name="TradeUpdate" component={TradeUpdate} />
-          <Stack.Screen name="AllData" component={AdminScreen} />
+          <Stack.Screen name="aaharUpdate" component={AaharUpdate} />
+          <Stack.Screen name="plastIndiaUpdate" component={PlastUpdate} />
+          <Stack.Screen name="autoUpdate" component={AutoUpdate} />
+          <Stack.Screen name="tradeUpdate" component={TradeUpdate} />
+          <Stack.Screen name="allData" component={AdminScreen} />
         </Stack.Navigator>
       )}
     </>
