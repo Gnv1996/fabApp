@@ -253,6 +253,15 @@ function PlastUpdate({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
+      <View
+        style={{
+          borderBottomColor: colors.gray,
+          borderBottomWidth: 1,
+          backgroundColor: colors.black,
+          padding: 15,
+        }}>
+        <Text style={{color: 'white', textAlign: 'right'}}>to top</Text>
+      </View>
     </ScrollView>
   );
 }

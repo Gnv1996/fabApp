@@ -87,10 +87,27 @@ function TradeFair() {
           </TouchableOpacity>
         </View>
       </View>
+      <View>
+        <View
+          style={{
+            borderBottomWidth: 2,
+            borderBottomColor: 'red',
+            margin: 15,
+            width: 100,
+          }}>
+          <Text style={styles.layoutHeading}>Layout</Text>
+        </View>
+
+        <Image
+          source={require('../assests/expo.jpeg')}
+          style={styles.imgStyle}
+        />
+      </View>
       <View
         style={{
           borderBottomColor: colors.gray,
           borderBottomWidth: 1,
+          backgroundColor: colors.black,
           padding: 15,
         }}>
         <Text style={{color: 'white', textAlign: 'right'}}>to top</Text>
@@ -193,6 +210,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 27,
   },
+  layoutHeading: {
+    borderRadius: 10,
+    color: colors.black,
+    fontWeight: 'bold',
+    fontSize: 27,
+    borderBottomColor: 'red',
+    borderBottomWidth: 2,
+  },
   heading: {
     fontWeight: 'bold',
     fontSize: '23',
@@ -224,6 +249,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 20,
     justifyContent: 'center',
+  },
+  imgStyle: {
+    height: 300,
+    width: '100%',
   },
 });
 

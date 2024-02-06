@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {Table, Row} from 'react-native-table-component';
 import axios from 'axios';
 import colors from '../styles/colors';
@@ -9,7 +15,7 @@ const AdminScreen = () => {
   const [loading, setLoading] = useState(true);
   const [isExhibitorList, setIsExhibitorList] = useState(true); // Default to Exhibitor List
 
-  const tableHead = ['Company Name', 'Full Name', 'Mobile'];
+  const tableHead = ['Company Name', 'Full Name', 'Mobile', 'Actions'];
 
   const getApiEndpoint = () => {
     return isExhibitorList
@@ -36,9 +42,18 @@ const AdminScreen = () => {
       });
   }, [isExhibitorList]);
 
-  const handleViewButtonClick = rowData => {
-    // Handle the "View" button click for the corresponding row data
-    console.log('View button clicked for:', rowData);
+  const handleActionButtonClick = (action, rowData) => {
+    // Handle action button click for the corresponding row data
+    switch (action) {
+      case 'view':
+        console.log('View button clicked for:', rowData);
+        break;
+      case 'delete':
+        console.log('Delete button clicked for:', rowData);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleToggle = () => {
@@ -47,41 +62,43 @@ const AdminScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView>
       <Text style={styles.layoutText}>
         {isExhibitorList ? 'Exhibitor List' : 'Fabricator List'}
       </Text>
-      <TouchableOpacity onPress={handleToggle} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>
-          Switch to {isExhibitorList ? 'Fabricator' : 'Exhibitor'} List
-        </Text>
-      </TouchableOpacity>
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : (
-        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-          <Row
-            data={[...tableHead, 'Actions']}
-            style={styles.head}
-            textStyle={styles.text}
-          />
-          {tableData.map((rowData, index) => (
-            <Row
-              key={index}
-              data={[
-                ...rowData,
-                <TouchableOpacity
-                  onPress={() => handleViewButtonClick(rowData)}>
-                  <Text style={styles.viewButton}>View</Text>
-                </TouchableOpacity>,
-              ]}
-              style={styles.row}
-              textStyle={styles.text}
-            />
-          ))}
-        </Table>
-      )}
-    </View>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={handleToggle} style={styles.toggleButton}>
+          <Text style={styles.toggleButtonText}>
+            Switch to {isExhibitorList ? 'Fabricator' : 'Exhibitor'} List
+          </Text>
+        </TouchableOpacity>
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : (
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+            <Row data={tableHead} style={styles.head} textStyle={styles.text} />
+            {tableData.map((rowData, index) => (
+              <Row
+                key={index}
+                data={[
+                  ...rowData,
+                  <TouchableOpacity
+                    onPress={() => handleActionButtonClick('view', rowData)}>
+                    <Text style={styles.actionButton}>View</Text>
+                  </TouchableOpacity>,
+                  <TouchableOpacity
+                    onPress={() => handleActionButtonClick('delete', rowData)}>
+                    <Text style={styles.actionButton}>Delete</Text>
+                  </TouchableOpacity>,
+                ]}
+                style={styles.row}
+                textStyle={styles.text}
+              />
+            ))}
+          </Table>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -90,8 +107,7 @@ const styles = StyleSheet.create({
   head: {height: 40, backgroundColor: '#f1f8ff'},
   text: {margin: 6},
   row: {flexDirection: 'row', backgroundColor: '#FFF1C1'},
-  viewButton: {color: 'blue', textAlign: 'center'},
-  toggleText: {fontSize: 18, marginBottom: 10},
+  actionButton: {color: 'blue', textAlign: 'center', marginRight: 10},
   toggleButton: {backgroundColor: '#007BFF', padding: 10, borderRadius: 5},
   toggleButtonText: {color: 'white', textAlign: 'center'},
   layoutText: {

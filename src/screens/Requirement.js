@@ -78,8 +78,8 @@ function Requirement() {
 
   return (
     <ScrollView>
+      <Text style={styles.layoutText}>Exhibitor Requirement</Text>
       <View style={styles.container}>
-        <Text style={styles.layoutText}>Exhibitor Requirement</Text>
         <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
           {tableData.map((rowData, index) => (
             <Row
