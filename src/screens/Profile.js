@@ -46,19 +46,9 @@ const Profile = ({navigation}) => {
       setEmail(storedEmail);
 
       const response = await api.get('/user/get_profile');
-      console.log(response, '=======>======');
+      // console.log(response, '=======>======');
       const data = response.data.profileData;
-      setUserDetails({
-        ...userDetails,
-        companyName: data.companyName,
-        address: data.address,
-        mobileNumber: data.mobileNumber,
-        city: data.city,
-        state: data.state,
-        zipcode: data.zipcode,
-        websiteLink: data.websiteLink,
-        profileImage: data.profileImage,
-      });
+      setUserDetails(prev => ({...prev, ...data}));
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -71,7 +61,7 @@ const Profile = ({navigation}) => {
     fetchDataFromAPI();
   }, []);
 
-  console.log(userDetails, '---------------data----');
+  // console.log(userDetails, '---------------data----');
   const handleEditProfile = async () => {
     try {
       const formData = new FormData();
@@ -82,7 +72,7 @@ const Profile = ({navigation}) => {
       formData.append('state', userDetails.state);
       formData.append('zipcode', userDetails.zipcode);
       formData.append('websiteLink', userDetails.websiteLink);
-      formData.append('profile', userDetails.profile); // Only send the p
+      formData.append('profile', '');
 
       console.log(formData, '------->-fff------------');
       const response = await api.put('/user/update/profile', formData);

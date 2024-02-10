@@ -29,7 +29,7 @@ api.interceptors.request.use(
         const tokenToUse = ForgetToken ? ForgetToken : accessToken;
         config.headers['Authorization'] = `Bearer ${tokenToUse}`;
       }
-      console.log(config.headers, '--->----checking');
+      // console.log(config.headers, '--->----checking');
 
       return config;
     } catch (error) {
