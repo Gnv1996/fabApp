@@ -72,15 +72,21 @@ const Profile = ({navigation}) => {
       formData.append('state', userDetails.state);
       formData.append('zipcode', userDetails.zipcode);
       formData.append('websiteLink', userDetails.websiteLink);
-      formData.append('profile', '');
+      formData.append('profile', userDetails.profile);
+      formData.append('email', userDetails.email);
 
       console.log(formData, '------->-fff------------');
-      const response = await api.put('/user/update/profile', formData);
-
-      const responseData = await response.json();
+      const response = await api.put('/user/update/profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response, '--->--');
+      const responseData = response.data;
       console.log(responseData);
+      5;
 
-      if (response.ok) {
+      if (response.data) {
         const profileData = responseData.profile;
         setUserDetails(prev => {
           return {...prev, ...profileData};
