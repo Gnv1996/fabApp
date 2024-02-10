@@ -1,11 +1,11 @@
-import 'react-native-gesture-handler';
-import {createContext, useState, useEffect} from 'react';
+// AuthProvider.js
+import React, {createContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({children}) => {
-  const [userLoggedIn, setUserLoggedIn] = useState(null);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   useEffect(() => {
     // Check if the token is already saved in local storage

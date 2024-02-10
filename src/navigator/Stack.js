@@ -38,27 +38,27 @@ function Stacks() {
       {showSplash && <Splash />}
       {!showSplash && (
         <Stack.Navigator>
-          {/* {userLoggedIn ? ( */}
-          <Stack.Screen
-            name="Drawer"
-            component={MyDrawer}
-            options={{headerShown: false}}
-          />
-          {/* ) : ( */}
-          <>
+          {userLoggedIn ? (
             <Stack.Screen
-              name="Signup"
-              component={SignupScreen}
+              name="Drawer"
+              component={MyDrawer}
               options={{headerShown: false}}
             />
+          ) : (
+            <>
+              <Stack.Screen
+                name="Signup"
+                component={SignupScreen}
+                options={{headerShown: false}}
+              />
 
-            <Stack.Screen
-              name="Login"
-              component={LoginScreen}
-              options={{headerShown: false}}
-            />
-          </>
-          {/* )} */}
+              <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{headerShown: false}}
+              />
+            </>
+          )}
           <Stack.Screen
             name="Profile"
             component={Profile}
@@ -117,7 +117,7 @@ function Stacks() {
             name="plastIndiaUpdate"
             component={PlastUpdate}
             options={{
-              title: 'Plast India Update',
+              title: 'Plast India',
             }}
           />
           <Stack.Screen

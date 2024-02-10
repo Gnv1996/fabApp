@@ -34,12 +34,12 @@ function CustomDrawerContent(props) {
   useEffect(() => {
     const fetchUserName = async () => {
       try {
-        const storedFullName = await AsyncStorage.getItem('userName');
+        const storedFullName = await AsyncStorage.getItem('userFullName');
         setFullName(storedFullName || 'Hello');
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       } catch (error) {
         console.log(error);
-        setLoading(false); // Handle error by setting loading to false
+        setLoading(false);
       }
     };
     fetchUserName();
@@ -90,8 +90,17 @@ function CustomDrawerContent(props) {
                   color: 'black',
                   fontWeight: 'bold',
                   marginTop: 2,
+                  textAlign: 'center',
                 }}>
-                {fullname}
+                {fullname
+                  .split(' ')
+                  .map((word, index) =>
+                    index === 0
+                      ? word.charAt(0).toUpperCase() +
+                        word.slice(1).toLowerCase()
+                      : word.toLowerCase(),
+                  )
+                  .join(' ')}
               </Text>
             )}
           </Text>
@@ -156,7 +165,7 @@ function MyDrawer() {
       initialRouteName="Home"
       drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
-        name="Exhibition"
+        name="Home"
         component={HomeScreen}
         options={({navigation}) => ({
           drawerLabel: 'Exhibition',

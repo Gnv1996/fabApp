@@ -205,7 +205,7 @@ function AutoUpdate({navigation}) {
         />
         <FormInput
           textHeader="Event Date"
-          placeholder="Event Date"
+          placeholder="DD/MM/YY"
           value={adminData.eventDate}
           onChangeText={text => handleInputChange('eventDate', text)}
         />
@@ -219,7 +219,7 @@ function AutoUpdate({navigation}) {
         <FormInput
           textHeader="Time of Event"
           type="text"
-          placeholder="Time Period"
+          placeholder="Like 5:30am- 6:00 pm"
           value={adminData.timePeriod}
           onChangeText={text => handleInputChange('timePeriod', text)}
         />

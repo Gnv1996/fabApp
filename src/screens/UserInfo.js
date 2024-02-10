@@ -14,7 +14,7 @@ import FormInput from '../components/FormInput';
 import colors from '../styles/colors';
 import {ColorPicker} from 'react-native-color-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import axios from 'axios';
+import api from '../utils/api';
 
 function UserInfo() {
   const [stallSize, setStallSize] = useState('');
@@ -154,10 +154,11 @@ function UserInfo() {
     };
 
     try {
-      const response = await axios.post('YOUR_POST_API_ENDPOINT', dataToSend);
+      const response = await api.post('/requirement/set', dataToSend);
 
       console.log('Response:', response.data);
       // Handle response according to your requirements
+      console.log(dataToSend, '--->---requirement Form---');
     } catch (error) {
       console.error('Error:', error);
       // Handle error
@@ -299,7 +300,7 @@ function UserInfo() {
               textHeader="Products to display / Service"
               placeholder={'Enter your display/service'}
               value={products}
-              setProducts={setProducts}
+              onChangeText={setProducts}
             />
             <Text style={styles.labels}>Branding</Text>
             <View style={{flexDirection: 'row'}}>

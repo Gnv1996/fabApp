@@ -2367,12 +2367,12 @@
   "resolved" "https://registry.npmjs.org/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz"
   "version" "1.0.5"
 
-"axios@^1.4.0":
-  "integrity" "sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA=="
-  "resolved" "https://registry.npmjs.org/axios/-/axios-1.4.0.tgz"
-  "version" "1.4.0"
+"axios@^1.6.7":
+  "integrity" "sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-1.6.7.tgz"
+  "version" "1.6.7"
   dependencies:
-    "follow-redirects" "^1.15.0"
+    "follow-redirects" "^1.15.4"
     "form-data" "^4.0.0"
     "proxy-from-env" "^1.1.0"
 
@@ -3602,10 +3602,10 @@
   "resolved" "https://registry.npmjs.org/flow-parser/-/flow-parser-0.211.1.tgz"
   "version" "0.211.1"
 
-"follow-redirects@^1.15.0":
-  "integrity" "sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA=="
-  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.2.tgz"
-  "version" "1.15.2"
+"follow-redirects@^1.15.4":
+  "integrity" "sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw=="
+  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.5.tgz"
+  "version" "1.15.5"
 
 "for-each@^0.3.3":
   "integrity" "sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw=="

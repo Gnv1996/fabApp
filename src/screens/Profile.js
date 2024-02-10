@@ -7,28 +7,130 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
-  PermissionsAndroid,
+  Image,
+  Platform, // Import Platform
+  PermissionsAndroid, // Import PermissionsAndroid
 } from 'react-native';
 import colors from '../styles/colors';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DocumentPicker from 'react-native-document-picker';
-import {RNCamera} from 'react-native-camera';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import FormData from 'form-data';
 
 const Profile = ({navigation}) => {
   const [userRole, setUserRole] = useState('');
-  const [userDetails, setUserdetails] = useState({
-    editableCompanyName: '',
-    editableMobile: '',
-    editableAddress: '',
-    editableCity: '',
-    editableState: '',
-    editableZipCode: '',
-    fullName: '',
-    editableWebsiteLink: '',
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [userDetails, setUserDetails] = useState({
+    companyName: '',
+    mobileNumber: '',
+    address: '',
+    city: '',
+    state: '',
+    zipcode: '',
+    websiteLink: '',
+    profileImage: '',
   });
   const [loading, setLoading] = useState(true);
+
+  const fetchDataFromAPI = async () => {
+    try {
+      const storedUserRole = await AsyncStorage.getItem('userRole');
+      setUserRole(storedUserRole);
+
+      const storedFullName = await AsyncStorage.getItem('userFullName');
+      setFullName(storedFullName);
+
+      const storedEmail = await AsyncStorage.getItem('userEmail');
+      setEmail(storedEmail);
+
+      const response = await api.get('/user/get_profile');
+      console.log(response, '=======>======');
+      const data = response.data.profileData;
+      setUserDetails({
+        ...userDetails,
+        companyName: data.companyName,
+        address: data.address,
+        mobileNumber: data.mobileNumber,
+        city: data.city,
+        state: data.state,
+        zipcode: data.zipcode,
+        websiteLink: data.websiteLink,
+        profileImage: data.profileImage,
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error fetching data from API:', error);
+      Alert.alert('Error', 'Failed to fetch profile data');
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromAPI();
+  }, []);
+
+  const handleEditProfile = async () => {
+    try {
+      var formdata = new FormData();
+      formdata.append('profile', userDetails.profileImage);
+      formdata.append('companyName', userDetails.companyName);
+      formdata.append('mobileNumber', userDetails.mobileNumber);
+      formdata.append('address', userDetails.address);
+      formdata.append('city', userDetails.city);
+      formdata.append('state', userDetails.state);
+      formdata.append('zipcode', userDetails.zipcode);
+      formdata.append('websiteLink', userDetails.websiteLink);
+      // const formData = new FormData();
+      // formData.append('companyName', userDetails.editableCompanyName);
+      // formData.append('mobileNumber', userDetails.editableMobile);
+      // formData.append('address', userDetails.editableAddress);
+      // formData.append('city', userDetails.editableCity);
+      // formData.append('state', userDetails.editableState);
+      // formData.append('zipcode', userDetails.editableZipCode);
+      // formData.append('websiteLink', userDetails.editableWebsiteLink);
+      // formData.append('profile', JSON.stringify({})); // Only send the p
+
+      console.log(formdata, '------->-fff------------');
+      const response = await api.put('/user/update/profile', formdata);
+
+      const responseData = await response.json();
+      console.log(responseData);
+
+      if (response.ok) {
+        const profileData = responseData.profile;
+        setUserDetails({
+          ...userDetails,
+          editableCompanyName: profileData.companyName,
+          editableMobile: profileData.mobileNumber,
+          editableAddress: profileData.address,
+          editableCity: profileData.city,
+          editableState: profileData.state,
+          editableZipCode: profileData.zipcode,
+          editableWebsiteLink: profileData.websiteLink,
+          profileImageURL: profileData.profileImage,
+        });
+        Alert.alert('Success', 'Profile updated successfully');
+      } else {
+        Alert.alert(
+          'Error',
+          responseData.message || 'Failed to update profile',
+        );
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      Alert.alert('Error', 'An error occurred while updating profile');
+    }
+  };
+
+  const uploadImageHandler = () => {
+    launchImageLibrary({mediaType: 'photo'}, response => {
+      if (!response.didCancel && !response.error) {
+        setUserDetails({...userDetails, profileImageURL: response.uri});
+      }
+    });
+  };
 
   const requestGalleryPermission = async () => {
     if (Platform.OS === 'android') {
@@ -36,10 +138,8 @@ const Profile = ({navigation}) => {
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
           {
-            title: 'Cool Photo App Gallery Permission',
-            message:
-              'Cool Photo App needs access to your gallery ' +
-              'so you can pick awesome pictures.',
+            title: 'Gallery Permission',
+            message: 'App needs access to your gallery to pick pictures.',
             buttonNeutral: 'Ask Me Later',
             buttonNegative: 'Cancel',
             buttonPositive: 'OK',
@@ -54,7 +154,7 @@ const Profile = ({navigation}) => {
         console.warn(err);
       }
     } else if (Platform.OS === 'ios') {
-      // For iOS, the permission is automatically handled by the library
+      // For iOS, permissions are handled automatically
     }
   };
 
@@ -99,6 +199,9 @@ const Profile = ({navigation}) => {
       const result = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
       });
+
+      setUserDetails({...userDetails, profileImageURL: response});
+      setModalVisible(true);
       console.log(result);
     } catch (err) {
       console.log('Error picking document:', err);
@@ -107,7 +210,7 @@ const Profile = ({navigation}) => {
 
   const openCamera = () => {
     requestCameraPermission();
-    ImagePicker.showImagePicker({}, response => {
+    launchCamera({mediaType: 'photo'}, response => {
       console.log('Response =', response);
 
       if (response.didCancel) {
@@ -119,116 +222,6 @@ const Profile = ({navigation}) => {
         console.log(response);
       }
     });
-  };
-
-  const uploadImageHandler = async () => {
-    try {
-      const doc = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
-      }).catch(err => {
-        if (DocumentPicker.isCancel(err)) {
-          console.log('Document picking cancelled');
-        } else {
-          console.log('Error picking document:', err);
-        }
-      });
-
-      // Convert the image to base64 format
-      const base64ImageData = await RNFetchBlob.fs.readFile(doc.uri, 'base64');
-
-      // Include the image data in the request payload
-      const formData = new FormData();
-      formData.append('image', base64ImageData);
-
-      // Make the API call to upload the image
-      const response = await axios.post('YOUR_API_ENDPOINT', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          // Include any additional headers required by your API
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to upload image');
-      }
-
-      // Handle the response as needed
-      const responseData = await response.json();
-      console.log(responseData);
-    } catch (error) {
-      console.log('Error uploading image:', error);
-    }
-    openCamera();
-    openGallery();
-  };
-
-  useEffect(() => {
-    // Fetch userRole from AsyncStorage when the component mounts
-    const fetchUserRole = async () => {
-      try {
-        const storedUserRole = await AsyncStorage.getItem('userRole').catch(
-          console.error,
-        );
-        setUserRole(storedUserRole);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
-
-  useEffect(() => {
-    const fetchDataFromAPI = async () => {
-      try {
-        const response = await api.get('profile/');
-        const data = response.data.data;
-        setUserdetails({
-          ...userDetails,
-          editableCompanyName: data.company,
-          editableAddress: data.address,
-          editableMobile: data.mobile_no,
-          editableCity: data.city,
-          editableState: data.state,
-          editableZipCode: data.zip_code,
-          editableWebsiteLink: data.website_link,
-          email: data.email,
-          fullName: data.fullName,
-        });
-        setLoading(false);
-        await AsyncStorage.setItem(
-          'userName',
-          data.first_name + ' ' + data.last_name,
-        ).catch(console.error);
-      } catch (error) {
-        setLoading(false);
-        console.log('Error fetching data from API:', error);
-      }
-    };
-    fetchDataFromAPI();
-  }, []);
-
-  const handleEditProfile = async () => {
-    try {
-      const response = await api.post('profile/', {
-        company: userDetails.editableCompanyName,
-        mobile_no: userDetails.editableMobile,
-        address: userDetails.editableAddress,
-        city: userDetails.editableCity,
-        state: userDetails.editableState,
-        zip_code: userDetails.editableZipCode,
-        website_link: userDetails.editableWebsiteLink,
-      });
-      console.log(response.data);
-      if (response.data.success === false) {
-        Alert.alert('Error', response.data.message);
-      } else {
-        Alert.alert('Success', response.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (
@@ -252,15 +245,21 @@ const Profile = ({navigation}) => {
           </TouchableOpacity>
           <View style={styles.detail}>
             <View style={styles.first}>
-              <Text
-                style={{fontSize: 50, color: colors.black, fontWeight: 'bold'}}>
-                {userDetails.fullName?.charAt(0)}
-              </Text>
+              {userDetails.profileImage ? (
+                <Image
+                  source={{uri: userDetails.profileImage}}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <Text style={styles.titleHeading}>
+                  {fullName.charAt(0).toUpperCase()}
+                </Text>
+              )}
             </View>
 
             <FormInput
-              style={styles.title}
-              value={userDetails.fullName}
+              style={styles.titles}
+              value={fullName}
               placeholder="Full Name"
             />
           </View>
@@ -270,10 +269,10 @@ const Profile = ({navigation}) => {
               <FormInput
                 style={styles.user_info}
                 textHeader={'Company Name'}
-                value={userDetails.company}
+                value={userDetails.companyName}
                 placeholder={'Enter your Company Name'}
                 onChangeText={text => {
-                  setUserdetails({...userDetails, company: text});
+                  setUserDetails({...userDetails, companyName: text});
                 }}
               />
             </View>
@@ -281,35 +280,35 @@ const Profile = ({navigation}) => {
             <FormInput
               style={styles.titleEmail}
               textHeader={'Email'}
-              value={userDetails.email}
+              value={email}
             />
 
             <FormInput
               style={styles.user_info}
               textHeader={'Mobile Number'}
               placeholder={'+91234567890'}
-              value={userDetails.editableMobile}
+              value={userDetails.mobileNumber}
               onChangeText={text =>
-                setUserdetails({...userDetails, editableMobile: text})
+                setUserDetails({...userDetails, mobileNumber: text})
               }
             />
             <FormInput
               style={styles.user_info}
               textHeader={'Address'}
               placeholder={'Enter your Address'}
-              value={userDetails.editableAddress}
+              value={userDetails.address}
               onChangeText={text =>
-                setUserdetails({...userDetails, editableAddress: text})
+                setUserDetails({...userDetails, address: text})
               }
             />
 
             <FormInput
               style={styles.user_info}
               textHeader={'City'}
-              placeholder={'Enter your Address'}
-              value={userDetails.editableCity}
+              placeholder={'Enter your City'}
+              value={userDetails.city}
               onChangeText={text =>
-                setUserdetails({...userDetails, editableCity: text})
+                setUserDetails({...userDetails, city: text})
               }
             />
 
@@ -317,49 +316,49 @@ const Profile = ({navigation}) => {
               style={styles.user_info}
               textHeader={'State'}
               placeholder={'Enter your State'}
-              value={userDetails.editableState}
+              value={userDetails.state}
               onChangeText={text =>
-                setUserdetails({...userDetails, editableState: text})
+                setUserDetails({...userDetails, state: text})
               }
             />
 
             <FormInput
               style={styles.user_info}
               textHeader={'Zip Code'}
-              placeholder={'Enter your zip Code'}
-              value={userDetails.editableZipCode}
+              placeholder={'Enter your Zip Code'}
+              value={userDetails.zipcode}
               onChangeText={text =>
-                setUserdetails({...userDetails, editableZipCode: text})
+                setUserDetails({...userDetails, zipcode: text})
               }
             />
             <FormInput
               style={styles.user_info}
               textHeader={'Website Link'}
-              placeholder={'Enter your Website'}
-              value={userDetails.editableWebsiteCode}
+              placeholder={'Enter your Website Link'}
+              value={userDetails.websiteLink}
               onChangeText={text =>
-                setUserdetails({...userDetails, editableWebsiteCode: text})
+                setUserDetails({...userDetails, websiteLink: text})
               }
             />
+
             <TouchableOpacity
               style={styles.imagePickerButton}
               onPress={uploadImageHandler}>
               <Text style={{color: colors.black}}>Upload Image</Text>
             </TouchableOpacity>
           </View>
-          <View style={{marginTop: 10}}>
-            <TouchableOpacity style={styles.btn} onPress={handleEditProfile}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  fontSize: 18,
-                  color: 'black',
-                }}>
-                Update Profile
-              </Text>
-            </TouchableOpacity>
-          </View>
+
+          <TouchableOpacity style={styles.btn} onPress={handleEditProfile}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: 18,
+                color: 'black',
+              }}>
+              Update Profile
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
     </ScrollView>
@@ -407,11 +406,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 30,
   },
+  titles: {
+    color: colors.black,
+    fontWeight: 'bold',
+    fontSize: 30,
+    textAlign: 'center',
+  },
   titleEmail: {
     color: colors.black,
-    fontSize: 20,
+    fontSize: 18,
     borderBottomWidth: 1,
     borderColor: colors.gray,
+  },
+  titleHeading: {
+    fontSize: 40,
+    color: colors.black,
+    fontWeight: 'bold',
   },
   detail: {
     color: colors.black,
@@ -438,11 +448,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 10,
   },
-  selectedImage: {
+  profileImage: {
     width: 200,
     height: 200,
-    resizeMode: 'cover',
-    alignSelf: 'center',
+    borderRadius: 100,
     marginBottom: 20,
   },
 });

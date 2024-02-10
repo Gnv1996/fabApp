@@ -23,7 +23,7 @@ const OtpModal = ({isVisible, setVisible, email, navigation}) => {
     try {
       setVerifyClicked(true);
       setResendClicked(false);
-      const response = await api.post('verify-otp/', {
+      const response = await api.post('/user/verify/otp ', {
         email,
         otp,
       });
@@ -49,7 +49,7 @@ const OtpModal = ({isVisible, setVisible, email, navigation}) => {
     try {
       setResendClicked(true);
       setVerifyClicked(false);
-      const response = await api.post('resend-otp/', {
+      const response = await api.post('/user/resend/otp/', {
         email,
       });
       console.log(response);

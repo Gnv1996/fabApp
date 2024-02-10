@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,11 +9,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import FormInput from '../components/FormInput';
-import api from '../utils/api';
+import api from '../utils/api'; // Update import path
 import colors from '../styles/colors';
 import {AuthContext} from '../contexts/AuthContext';
 import OtpModal from '../components/OtpModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ResetPasswordModal from '../components/ResetPasswordModel';
 
 function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
@@ -22,6 +23,7 @@ function LoginScreen({navigation}) {
   const {handleLogin} = useContext(AuthContext);
   const [isVisible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [isResetVisible, setResetVisible] = useState(false);
 
   const handleLoginSubmit = async () => {
     if (!email || !password) {
@@ -31,20 +33,18 @@ function LoginScreen({navigation}) {
 
     try {
       setLoading(true);
-      const response = await api.post('signin/', {email, password});
-      const {success, message, token, role} = response.data;
+      const response = await api.post('/user/auth/signin/', {email, password});
+      const {success, accessToken, user} = response.data;
+      console.log(response.data, '->->->->');
 
-      if (!success) {
-        if (message === 'Please verify your email.') {
-          setVisible(true);
-        } else {
-          Alert.alert('Error', message);
-        }
+      if (success == true) {
+        await AsyncStorage.setItem('userRole', user.role).catch(console.error);
+        await AsyncStorage.setItem('userToken', accessToken);
+        await AsyncStorage.setItem('userEmail', user.email);
+        await AsyncStorage.setItem('userFullName', user.fullname);
+        handleLogin(accessToken);
       } else {
-        await AsyncStorage.setItem('userRole', role.toString()).catch(
-          console.error,
-        );
-        handleLogin(token.access);
+        setError('An error occurred during login.');
       }
     } catch (error) {
       console.log(error);
@@ -57,6 +57,10 @@ function LoginScreen({navigation}) {
         setError('');
       }, 2000);
     }
+  };
+
+  const handleForgotPassword = () => {
+    setResetVisible(true);
   };
 
   return (
@@ -85,6 +89,9 @@ function LoginScreen({navigation}) {
         placeholder="Enter your Password"
         secureTextEntry={true}
       />
+      <Text style={styles.forgotText} onPress={handleForgotPassword}>
+        Forgot Password?
+      </Text>
 
       <View style={{alignItems: 'center'}}>
         <TouchableOpacity style={styles.btn} onPress={handleLoginSubmit}>
@@ -102,6 +109,10 @@ function LoginScreen({navigation}) {
         </Text>
       </View>
 
+      <ResetPasswordModal
+        isResetVisible={isResetVisible}
+        setResetVisible={setResetVisible}
+      />
       <OtpModal isVisible={isVisible} setVisible={setVisible} email={email} />
     </View>
   );
@@ -147,6 +158,13 @@ const styles = StyleSheet.create({
     color: colors.red,
     marginTop: -25,
     marginBottom: 20,
+  },
+  forgotText: {
+    textAlign: 'right',
+    color: colors.blue,
+    marginBottom: 10,
+    textDecorationLine: 'underline',
+    padding: 2,
   },
 });
 

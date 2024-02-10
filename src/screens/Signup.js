@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import FormInput from '../components/FormInput';
 import api from '../utils/api';
@@ -20,6 +22,7 @@ const SignupScreen = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false); // Track signup process
 
   const [role, setRoles] = useState([
     {name: 'Exhibitor', id: 1, isChecked: false},
@@ -41,14 +44,16 @@ const SignupScreen = ({navigation}) => {
   const handleSignup = async () => {
     setError('');
     if (!email || !password || !confirmPassword) {
-      setError('Please Filled all Detail');
+      setError('Please fill in all details');
       return;
     }
+    setIsSigningUp(true);
     try {
-      const response = await api.post('signup/', {
+      const response = await api.post('/user/auth/signup/', {
         fullName,
         email,
-        password: {password: password, confirm_password: confirmPassword},
+        password,
+        confirmPassword,
         role: role.find(r => r.isChecked)?.id || '',
       });
 
@@ -60,95 +65,105 @@ const SignupScreen = ({navigation}) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSigningUp(false); // Finish signup process
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={{alignItems: 'center'}}>
-        <Image
-          source={require('../assests/cloud.png')}
-          style={{height: 200, width: 200}}
-        />
-      </View>
-      <Text style={styles.header}>Sign up</Text>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={{alignItems: 'center'}}>
+          <Image
+            source={require('../assests/cloud.png')}
+            style={{height: 200, width: 200}}
+          />
+        </View>
+        <Text style={styles.header}>Sign up</Text>
 
-      <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
-      <FormInput
-        textHeader={'Full Name'}
-        value={fullName}
-        onChangeText={text => setFullName(text)}
-        placeholder={'Full Name'}
-      />
-      <FormInput
-        textHeader={'Email'}
-        value={email}
-        onChangeText={text => setEmail(text)}
-        placeholder={'test12@gmail.com'}
-      />
-      <FormInput
-        textHeader={'Password'}
-        value={password}
-        onChangeText={text => setPassword(text)}
-        placeholder={'Test12@1234'}
-        secureTextEntry={true}
-      />
-      <FormInput
-        textHeader={'Confirm Password'}
-        value={confirmPassword}
-        onChangeText={text => setConfirmPassword(text)}
-        placeholder={'Confirm Password'}
-        secureTextEntry={true}
-      />
-      <Text style={styles.label}>I am</Text>
-      <View style={{flexDirection: 'row'}}>
-        <FlatList
-          data={role}
-          keyExtractor={item => item.id.toString()}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({item, index}) => (
-            <TouchableOpacity
-              onPress={() => handleRolePress(index)}
-              style={[
-                styles.btns,
-                {
-                  backgroundColor: item.isChecked ? colors.orange : colors.gray,
-                },
-              ]}>
-              <Text style={{textAlign: 'center', color: colors.white}}>
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          )}
-          horizontal={true}
+        <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
+        <FormInput
+          textHeader={'Full Name'}
+          value={fullName}
+          onChangeText={text => setFullName(text)}
+          placeholder={'Full Name'}
         />
-      </View>
+        <FormInput
+          textHeader={'Email'}
+          value={email}
+          onChangeText={text => setEmail(text)}
+          placeholder={'test12@gmail.com'}
+        />
+        <FormInput
+          textHeader={'Password'}
+          value={password}
+          onChangeText={text => setPassword(text)}
+          placeholder={'Test12@1234'}
+          secureTextEntry={true}
+        />
+        <FormInput
+          textHeader={'Confirm Password'}
+          value={confirmPassword}
+          onChangeText={text => setConfirmPassword(text)}
+          placeholder={'Confirm Password'}
+          secureTextEntry={true}
+        />
+        <Text style={styles.label}>I am</Text>
+        <View style={{flexDirection: 'row'}}>
+          <FlatList
+            data={role}
+            keyExtractor={item => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item, index}) => (
+              <TouchableOpacity
+                onPress={() => handleRolePress(index)}
+                style={[
+                  styles.btns,
+                  {
+                    backgroundColor: item.isChecked
+                      ? colors.orange
+                      : colors.gray,
+                  },
+                ]}>
+                <Text style={{textAlign: 'center', color: colors.white}}>
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            )}
+            horizontal={true}
+          />
+        </View>
 
-      <View style={{alignItems: 'center'}}>
-        <TouchableOpacity style={styles.btn} onPress={handleSignup}>
-          <Text style={styles.btn_Text}>Sign up</Text>
-        </TouchableOpacity>
-        <Text style={styles.link_Text}>
-          Have an account?
-          <Text
-            style={styles.link_Text2}
-            onPress={() => {
-              navigation.navigate('Login'),
-                setConfirmPassword(''),
-                setEmail('');
-            }}>
-            {' '}
-            Login
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity style={styles.btn} onPress={handleSignup}>
+            {isSigningUp ? (
+              <ActivityIndicator color={colors.black} /> // Show loader when signing up
+            ) : (
+              <Text style={styles.btn_Text}>Sign up</Text>
+            )}
+          </TouchableOpacity>
+          <Text style={styles.link_Text}>
+            Have an account?
+            <Text
+              style={styles.link_Text2}
+              onPress={() => {
+                navigation.navigate('Login'),
+                  setConfirmPassword(''),
+                  setEmail('');
+              }}>
+              {' '}
+              Login
+            </Text>
           </Text>
-        </Text>
+        </View>
+        <OtpModal
+          isVisible={isModalVisible}
+          setVisible={setModalVisible}
+          email={email}
+          navigation={navigation}
+        />
       </View>
-      <OtpModal
-        isVisible={isModalVisible}
-        setVisible={setModalVisible}
-        email={email}
-        navigation={navigation}
-      />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -156,7 +171,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // alignItems: 'center',
     padding: 20,
   },
   header: {

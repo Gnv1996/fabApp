@@ -10,9 +10,12 @@ import {
 import {Table, Row} from 'react-native-table-component';
 import axios from 'axios'; // Import Axios
 import colors from '../styles/colors';
-
+import {useNavigation} from '@react-navigation/native';
+import api from '../utils/api';
 function Requirement() {
   const [tableData, setTableData] = useState([]);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     // Initialize tableData with keys only
@@ -40,8 +43,8 @@ function Requirement() {
   const fetchDataFromApi = async () => {
     try {
       // Replace 'your-api-endpoint' with the actual API endpoint
-      const response = await axios.get('https://api.example.com/data'); // Example API endpoint
-      const apiData = response.data;
+      const response = await api.get('/requirement/get'); // Example API endpoint
+      const apiData = response.data.userRequirement;
 
       const valuesForKeys = {
         'Size of Stall': apiData.sizeOfStall,
@@ -74,6 +77,7 @@ function Requirement() {
 
   const buttonRejectHandler = () => {
     Alert.alert('You Rejected! Successfully');
+    navigation.navigate('Notifications');
   };
 
   return (
@@ -85,9 +89,8 @@ function Requirement() {
             <Row
               key={index}
               data={[
-                // Display key on the left and value on the right
                 <Text style={styles.texts}>{rowData}</Text>,
-                <Text style={styles.text}>{rowData[0]}</Text>,
+                <Text style={styles.text}>{rowData}</Text>,
               ]}
               style={[styles.row, index % 2 && {backgroundColor: '#f2f2f2'}]}
             />

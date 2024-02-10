@@ -1,7 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Platform,
+  PermissionsAndroid,
+  ScrollView,
+} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
-import {Permissions} from 'react-native-permissions';
 
 const UpdateScreen = () => {
   const [image, setImage] = useState(null);
@@ -15,21 +22,19 @@ const UpdateScreen = () => {
 
   const checkPermission = async () => {
     try {
-      if (Platform.OS === 'ios') {
-        const cameraStatus = await Permissions.check('photo');
-        if (cameraStatus !== 'authorized') {
-          const permissionStatus = await Permissions.request('photo');
-          if (permissionStatus !== 'authorized') {
-            console.log('Permission to access photos denied');
-          }
-        }
-      } else if (Platform.OS === 'android') {
-        const storageStatus = await Permissions.check('storage');
-        if (storageStatus !== 'authorized') {
-          const permissionStatus = await Permissions.request('storage');
-          if (permissionStatus !== 'authorized') {
-            console.log('Permission to access storage denied');
-          }
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission',
+            message: 'App needs access to your storage to upload images.',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Storage permission granted');
+        } else {
+          console.log('Storage permission denied');
         }
       }
     } catch (error) {
@@ -52,6 +57,11 @@ const UpdateScreen = () => {
         console.log('Error picking document:', err);
       }
     }
+  };
+
+  const deleteImage = () => {
+    setImage(null);
+    setIsImageSelected(false);
   };
 
   const sendImage = async imageUri => {
@@ -83,63 +93,70 @@ const UpdateScreen = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <TouchableOpacity onPress={pickImage}>
-          {isImageSelected ? (
-            <Image
-              source={{uri: image}}
-              style={{width: 200, height: 200, borderRadius: 10}}
-            />
-          ) : (
-            <View
-              style={{
-                width: 200,
-                height: 200,
-                backgroundColor: '#ddd',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 10,
-              }}>
-              <Text>Select Image</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+    <ScrollView>
+      <View style={{flex: 1}}>
+        <View style={{flex: 1, marginTop: 50, alignItems: 'center'}}>
+          <TouchableOpacity onPress={pickImage}>
+            {isImageSelected ? (
+              <Image
+                source={{uri: image}}
+                style={{width: 200, height: 200, borderRadius: 10}}
+              />
+            ) : (
+              <View
+                style={{
+                  width: 200,
+                  height: 200,
+                  backgroundColor: '#ddd',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 10,
+                }}>
+                <Text>Select Image</Text>
+              </View>
+            )}
+          </TouchableOpacity>
 
-        {isImageSelected && (
-          <Text style={{marginTop: 20}}>
-            Uploaded on: {date.toLocaleString()}
-          </Text>
+          {isImageSelected && (
+            <Text style={{marginTop: 20}}>
+              Uploaded on: {date.toLocaleString()}
+            </Text>
+          )}
+        </View>
+
+        {uploading && (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 10,
+            }}>
+            <Text style={{color: 'red', fontSize: 17}}>Uploading...</Text>
+          </View>
+        )}
+
+        {isImageSelected && !uploading && (
+          <View
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: '#ccc',
+              padding: 10,
+              alignItems: 'center',
+            }}>
+            <View
+              style={{borderWidth: 1, borderRadius: 10, overflow: 'hidden'}}>
+              <Image source={{uri: image}} style={{width: 100, height: 100}} />
+            </View>
+            <Text style={{fontSize: 17, fontWeight: 'bold'}}>
+              Uploaded on: {date.toLocaleString()}
+            </Text>
+            <TouchableOpacity onPress={deleteImage}>
+              <Text style={{color: 'red'}}>Delete Image</Text>
+            </TouchableOpacity>
+          </View>
         )}
       </View>
-
-      {uploading && (
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 10,
-          }}>
-          <Text>Uploading...</Text>
-        </View>
-      )}
-
-      {isImageSelected && !uploading && (
-        <View
-          style={{
-            borderTopWidth: 1,
-            borderTopColor: '#ccc',
-            padding: 10,
-            alignItems: 'center',
-          }}>
-          <Image
-            source={{uri: image}}
-            style={{width: 100, height: 100, borderRadius: 10}}
-          />
-          <Text>Uploaded on: {date.toLocaleString()}</Text>
-        </View>
-      )}
-    </View>
+    </ScrollView>
   );
 };
 
