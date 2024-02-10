@@ -71,45 +71,29 @@ const Profile = ({navigation}) => {
     fetchDataFromAPI();
   }, []);
 
+  console.log(userDetails, '---------------data----');
   const handleEditProfile = async () => {
     try {
-      var formdata = new FormData();
-      formdata.append('profile', userDetails.profileImage);
-      formdata.append('companyName', userDetails.companyName);
-      formdata.append('mobileNumber', userDetails.mobileNumber);
-      formdata.append('address', userDetails.address);
-      formdata.append('city', userDetails.city);
-      formdata.append('state', userDetails.state);
-      formdata.append('zipcode', userDetails.zipcode);
-      formdata.append('websiteLink', userDetails.websiteLink);
-      // const formData = new FormData();
-      // formData.append('companyName', userDetails.editableCompanyName);
-      // formData.append('mobileNumber', userDetails.editableMobile);
-      // formData.append('address', userDetails.editableAddress);
-      // formData.append('city', userDetails.editableCity);
-      // formData.append('state', userDetails.editableState);
-      // formData.append('zipcode', userDetails.editableZipCode);
-      // formData.append('websiteLink', userDetails.editableWebsiteLink);
-      // formData.append('profile', JSON.stringify({})); // Only send the p
+      const formData = new FormData();
+      formData.append('companyName', userDetails.companyName);
+      formData.append('mobileNumber', userDetails.mobileNumber);
+      formData.append('address', userDetails.address);
+      formData.append('city', userDetails.city);
+      formData.append('state', userDetails.state);
+      formData.append('zipcode', userDetails.zipcode);
+      formData.append('websiteLink', userDetails.websiteLink);
+      formData.append('profile', userDetails.profile); // Only send the p
 
-      console.log(formdata, '------->-fff------------');
-      const response = await api.put('/user/update/profile', formdata);
+      console.log(formData, '------->-fff------------');
+      const response = await api.put('/user/update/profile', formData);
 
       const responseData = await response.json();
       console.log(responseData);
 
       if (response.ok) {
         const profileData = responseData.profile;
-        setUserDetails({
-          ...userDetails,
-          editableCompanyName: profileData.companyName,
-          editableMobile: profileData.mobileNumber,
-          editableAddress: profileData.address,
-          editableCity: profileData.city,
-          editableState: profileData.state,
-          editableZipCode: profileData.zipcode,
-          editableWebsiteLink: profileData.websiteLink,
-          profileImageURL: profileData.profileImage,
+        setUserDetails(prev => {
+          return {...prev, ...profileData};
         });
         Alert.alert('Success', 'Profile updated successfully');
       } else {
@@ -127,7 +111,7 @@ const Profile = ({navigation}) => {
   const uploadImageHandler = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (!response.didCancel && !response.error) {
-        setUserDetails({...userDetails, profileImageURL: response.uri});
+        setUserDetails({...userDetails, profileImage: response.uri});
       }
     });
   };
@@ -326,7 +310,7 @@ const Profile = ({navigation}) => {
               style={styles.user_info}
               textHeader={'Zip Code'}
               placeholder={'Enter your Zip Code'}
-              value={userDetails.zipcode}
+              value={userDetails.zipcode.toString()}
               onChangeText={text =>
                 setUserDetails({...userDetails, zipcode: text})
               }

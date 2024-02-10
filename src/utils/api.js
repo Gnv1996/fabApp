@@ -21,15 +21,13 @@ api.interceptors.request.use(
   async config => {
     try {
       const accessToken = await getToken();
-      // const accessToken = AsyncStorage.getItem('userToken');
-      const ForgetToken = AsyncStorage.getItem('ForgetToken');
+      const ForgetToken = await AsyncStorage.getItem('ForgetToken'); // Await this call
 
-      console.log(accessToken, 'Token');
+      console.log(accessToken, 'Token------->-');
 
       if (accessToken) {
-        config.headers['Authorization'] = `Bearer ${
-          ForgetToken ? ForgetToken : accessToken
-        }`;
+        const tokenToUse = ForgetToken ? ForgetToken : accessToken;
+        config.headers['Authorization'] = `Bearer ${tokenToUse}`;
       }
       console.log(config.headers, '--->----checking');
 
