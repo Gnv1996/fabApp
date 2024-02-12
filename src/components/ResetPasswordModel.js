@@ -27,9 +27,12 @@ const ResetPasswordModal = ({isResetVisible, setResetVisible, data}) => {
         const response = await api.post('/user/forgot/password', {
           email,
         });
-        const {token} = response.data;
+        const {resetPasswordToken} = response.data;
+        console.log(response.data, '------->------forgot Token Chceking---');
         if (response.data.success === true) {
-          await AsyncStorage.setItem('ForgetToken', token).catch(console.error);
+          await AsyncStorage.setItem('ForgetToken', resetPasswordToken).catch(
+            console.error,
+          );
           setStep(2);
         } else {
           Alert.alert(
@@ -38,11 +41,11 @@ const ResetPasswordModal = ({isResetVisible, setResetVisible, data}) => {
           );
         }
       } else if (step === 2) {
-        const response = await api.post('/user/update/password', {
+        const response = await api.put('/user/update/password', {
           password,
           confirmPassword,
         });
-        if (response.data.success == true) {
+        if (response.data.success === true) {
           await AsyncStorage.removeItem('ForgetToken');
           Alert.alert(
             'Success',
@@ -82,10 +85,8 @@ const ResetPasswordModal = ({isResetVisible, setResetVisible, data}) => {
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => {
-            if (email !== '') setStep(2);
-            else Alert.alert('Error', 'Please enter your email');
-          }}>
+          onPress={resetPasswordHandler} // Call resetPasswordHandler on button press
+        >
           <Text style={styles.text}>Next</Text>
         </TouchableOpacity>
       </>

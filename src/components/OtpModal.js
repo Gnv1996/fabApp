@@ -24,7 +24,6 @@ const OtpModal = ({isVisible, setVisible, email, navigation}) => {
       setVerifyClicked(true);
       setResendClicked(false);
       const response = await api.post('/user/verify/otp ', {
-        email,
         otp,
       });
       console.log(response.data.message);
@@ -56,7 +55,8 @@ const OtpModal = ({isVisible, setVisible, email, navigation}) => {
       if (response.data.success === false) {
         Alert.alert('Error', response.data.message);
       } else {
-        Alert.alert('Success', response.data.message);
+        Alert.alert('Successfully You Verify', response.data.message);
+        await AsyncStorage.removeItem('OtpToken');
       }
     } catch (error) {
       console.log(error);

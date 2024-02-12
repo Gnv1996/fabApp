@@ -9,7 +9,7 @@ const api = axios.create({
 const getToken = async () => {
   try {
     const accessToken = await AsyncStorage.getItem('userToken');
-    console.log('Retrieved token:', accessToken);
+    // console.log('Retrieved token:', accessToken);
     return accessToken;
   } catch (error) {
     console.log('Error getting token from Async Storage:', error);
@@ -21,15 +21,25 @@ api.interceptors.request.use(
   async config => {
     try {
       const accessToken = await getToken();
-      const ForgetToken = await AsyncStorage.getItem('ForgetToken'); // Await this call
+      const ForgetToken = await AsyncStorage.getItem('ForgetToken');
+      const OtpToken = await AsyncStorage.getItem('OtpToken');
+      // Await this call
 
       // console.log(accessToken, 'Token------->-');
 
       if (accessToken) {
-        const tokenToUse = ForgetToken ? ForgetToken : accessToken;
-        config.headers['Authorization'] = `Bearer ${tokenToUse}`;
+        // const tokenToUse = ForgetToken ? ForgetToken : accessToken;
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
       }
-      console.log(config.headers, '--->----checking');
+      if (ForgetToken) {
+        config.headers['Authorization'] = `Bearer ${ForgetToken}`;
+      }
+      if (OtpToken) {
+        config.headers['Authorization'] = `Bearer ${OtpToken}`;
+      }
+
+      // console.log(config.headers, '--->----checking');
+      // console.log(ForgetToken, '------>-----Forgot Token-------');
 
       return config;
     } catch (error) {

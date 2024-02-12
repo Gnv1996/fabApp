@@ -6,6 +6,7 @@ export const AuthContext = createContext(null);
 
 const AuthProvider = ({children}) => {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [userID,setUserId]=useState(null);
 
   useEffect(() => {
     // Check if the token is already saved in local storage
@@ -45,7 +46,7 @@ const AuthProvider = ({children}) => {
   };
 
   return (
-    <AuthContext.Provider value={{userLoggedIn, handleLogin, handleLogout}}>
+    <AuthContext.Provider value={{userLoggedIn, handleLogin, handleLogout,userID,setUserId}}>
       {children}
     </AuthContext.Provider>
   );

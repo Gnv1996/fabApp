@@ -49,6 +49,7 @@ function LoginScreen({navigation}) {
     } catch (error) {
       console.log(error);
       setError('An error occurred during login.');
+      Alert.alert('Please Check Email and Password');
     } finally {
       setLoading(false);
       setTimeout(() => {

@@ -8,6 +8,7 @@ import {
   Image,
   FlatList,
   TextInput,
+  Alert,
 } from 'react-native';
 import {CheckBox} from 'react-native-elements';
 import FormInput from '../components/FormInput';
@@ -154,13 +155,20 @@ function UserInfo() {
     };
 
     try {
-      const response = await api.post('/requirement/set', dataToSend);
+      const response = await api.post('/requirement/set', dataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       console.log('Response:', response.data);
       // Handle response according to your requirements
+
       console.log(dataToSend, '--->---requirement Form---');
+      Alert.alert('Your Data is Successfully Save. ');
     } catch (error) {
       console.error('Error:', error);
+      Alert.alert('Please Enter all Details Error ');
       // Handle error
     }
   };

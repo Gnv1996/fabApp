@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -6,95 +6,118 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import {Table, Row} from 'react-native-table-component';
-import axios from 'axios'; // Import Axios
 import colors from '../styles/colors';
 import {useNavigation} from '@react-navigation/native';
 import api from '../utils/api';
+import {AuthContext} from '../contexts/AuthContext';
+
 function Requirement() {
   const [tableData, setTableData] = useState([]);
-
+  const [apiData, setApiData] = useState(null); // Store API response directly
+  const [loading, setLoading] = useState(true); // State to track loading
+  const {userID} = useContext(AuthContext);
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Initialize tableData with keys only
-    const initialKeys = [
-      'Size of Stall',
-      'Stall no.',
-      'Color Theme',
-      'Products to display',
-      'Branding',
-      'Wooden Floorings',
-      'Carpet color',
-      'Furniture',
-      'Lighting',
-      'Budget',
-      'Comment',
-      // ... add other keys similarly
-    ];
-
-    setTableData(initialKeys);
-
-    // Fetch data from the API
     fetchDataFromApi();
   }, []);
 
   const fetchDataFromApi = async () => {
     try {
-      // Replace 'your-api-endpoint' with the actual API endpoint
-      const response = await api.get('/requirement/get'); // Example API endpoint
-      const apiData = response.data.userRequirement;
-
-      const valuesForKeys = {
-        'Size of Stall': apiData.sizeOfStall,
-        'Stall no.': apiData.stallNo,
-        'Color Theme': apiData.colorTheme,
-        'Products to display': apiData.productsToDisplay,
-        Branding: apiData.branding,
-        'Wooden Floorings': apiData.woodenFlooring,
-        'Carpet color': apiData.carpetColor,
-        Furniture: apiData.furniture,
-        Lighting: apiData.lighting,
-        Budget: apiData.budget,
-        Comment: apiData.comment,
-        // ... add other keys similarly
-      };
-
-      // Create an array of arrays with keys and values
-      const transformedData = tableData.map(key => [key, valuesForKeys[key]]);
-
-      // Update the state with the transformed data
-      setTableData(transformedData);
+      const response = await api.get(`/requirement/get/${userID}`);
+      setApiData(response.data.userRequirement);
     } catch (error) {
       console.error('Error fetching data from API:', error);
+    } finally {
+      setLoading(false); // Set loading to false when API call is complete
     }
   };
 
-  const buttonAcceptHandler = () => {
-    Alert.alert('You Accepted Fabrication Successfully');
+  const buttonAcceptHandler = async () => {
+    try {
+      // Make API call to accept the requirement
+      await api.post('/requirement/accept', {userID});
+
+      // Show success alert
+      Alert.alert('You Accepted Fabrication Successfully');
+
+      // Refetch data from API
+      fetchDataFromApi();
+    } catch (error) {
+      console.error('Error accepting requirement:', error);
+      // Show error alert if API call fails
+      Alert.alert('Error accepting requirement. Please try again.');
+    }
   };
 
-  const buttonRejectHandler = () => {
-    Alert.alert('You Rejected! Successfully');
-    navigation.navigate('Notifications');
+  const buttonRejectHandler = async () => {
+    try {
+      await api.post('/requirement/reject', {userID});
+
+      // Show success alert
+      Alert.alert('You Rejected! Successfully');
+
+      // Refetch data from API
+      fetchDataFromApi();
+
+      // Navigate to Notifications screen
+      navigation.navigate('Notifications');
+    } catch (error) {
+      console.error('Error rejecting requirement:', error);
+      // Show error alert if API call fails
+      Alert.alert('Error rejecting requirement. Please try again.');
+    }
   };
+
+  const keyMapping = {
+    updatedAt: 'Last Updated',
+    stallSize: 'Size of Stall',
+    stallNumber: 'Stall no.',
+    Color_Theme: 'Color Theme',
+    selectedColor: 'Selected Color',
+    products: 'Products to display',
+    branding: 'Branding',
+    WoodenFlooring: 'Wooden Floorings',
+    carpetColor: 'Carpet color',
+    furniture: 'Furniture',
+    lighting: 'Lighting',
+    budget: 'Budget',
+    comment: 'Comment',
+  };
+
+  // Render loading indicator if data is being fetched
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.blue} />
+      </View>
+    );
+  }
 
   return (
     <ScrollView>
       <Text style={styles.layoutText}>Exhibitor Requirement</Text>
       <View style={styles.container}>
         <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-          {tableData.map((rowData, index) => (
-            <Row
-              key={index}
-              data={[
-                <Text style={styles.texts}>{rowData}</Text>,
-                <Text style={styles.text}>{rowData}</Text>,
-              ]}
-              style={[styles.row, index % 2 && {backgroundColor: '#f2f2f2'}]}
-            />
-          ))}
+          {apiData &&
+            Object.entries(apiData)
+              .filter(([key]) => key in keyMapping) // Filter keys based on the keyMapping
+              .map(([key, value], index) => (
+                <Row
+                  key={index}
+                  data={[
+                    <Text style={styles.texts}>{keyMapping[key]}</Text>, // Use modified key
+                    <Text style={styles.text}>{value}</Text>,
+                  ]}
+                  style={[
+                    styles.row,
+                    index % 2 && {backgroundColor: '#f2f2f2'},
+                  ]}
+                />
+              ))}
         </Table>
 
         <View style={styles.budget}>
@@ -176,6 +199,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 27,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -14,6 +14,7 @@ import FormInput from '../components/FormInput';
 import api from '../utils/api';
 import colors from '../styles/colors';
 import OtpModal from '../components/OtpModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -22,7 +23,8 @@ const SignupScreen = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
-  const [isSigningUp, setIsSigningUp] = useState(false); // Track signup process
+  const [isSigningUp, setIsSigningUp] = useState(false);
+  // Track signup process
 
   const [role, setRoles] = useState([
     {name: 'Exhibitor', id: 1, isChecked: false},
@@ -60,6 +62,9 @@ const SignupScreen = ({navigation}) => {
       if (response.data.success === false) {
         Alert.alert('Error', response.data.message);
       } else {
+        const {token} = response.data;
+        console.log(response.data, 'otpToken-----------');
+        AsyncStorage.setItem('OtpToken', token);
         setModalVisible(true);
         Alert.alert('Success', response.data.message);
       }
