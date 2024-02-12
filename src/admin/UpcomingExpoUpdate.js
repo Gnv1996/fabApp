@@ -17,10 +17,10 @@ import DocumentPicker from 'react-native-document-picker';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FormData from 'form-data';
 
-function AutoUpdate({navigation}) {
+function UpcomingExpoUpdate({navigation}) {
   const [loading, setLoading] = useState(false);
   const [adminData, setAdminData] = useState({
-    title: 'Auto',
+    title: '',
     eventDate: '',
     imageUrl: '',
     location: '',
@@ -180,8 +180,14 @@ function AutoUpdate({navigation}) {
 
   return (
     <ScrollView>
-      <Text style={styles.layoutText}>Auto Expo</Text>
+      <Text style={styles.layoutText}>Upcoming Expo Update</Text>
       <View style={styles.component}>
+        <FormInput
+          textHeader="Event Title"
+          placeholder="Title"
+          value={adminData.title}
+          onChangeText={text => handleInputChange('title', text)}
+        />
         <FormInput
           textHeader="Event Date"
           placeholder="DD/MM/YY"
@@ -297,4 +303,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AutoUpdate;
+export default UpcomingExpoUpdate;

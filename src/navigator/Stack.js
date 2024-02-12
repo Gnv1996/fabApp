@@ -19,6 +19,8 @@ import PlastUpdate from '../admin/PlastUpdate';
 import AutoUpdate from '../admin/AutoUpdate';
 import TradeUpdate from '../admin/TradeUpdate';
 import AdminScreen from '../admin/AdminScreen';
+import UpcomingExpo from '../expo/UpcomingExpo';
+import UpcomingExpoUpdate from '../admin/UpcomingExpoUpdate';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -135,10 +137,24 @@ function Stacks() {
             }}
           />
           <Stack.Screen
+            name="UpcomingUpdate"
+            component={UpcomingExpoUpdate}
+            options={{
+              title: 'Upcoming Expo Update',
+            }}
+          />
+          <Stack.Screen
             name="allData"
             component={AdminScreen}
             options={{
               title: 'Data Update',
+            }}
+          />
+          <Stack.Screen
+            name="UpcomingExpo"
+            component={UpcomingExpo}
+            options={{
+              title: 'Upcoming Expo',
             }}
           />
         </Stack.Navigator>

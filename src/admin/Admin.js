@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import colors from '../styles/colors';
 import {useNavigation} from '@react-navigation/native';
+import UpcomingExpo from '../expo/UpcomingExpo';
 
 function Admin() {
   const navigation = useNavigation();
@@ -27,6 +28,9 @@ function Admin() {
     navigation.navigate('allData');
   };
 
+  const UpcomingExpoUpdateHandler = () => {
+    navigation.navigate('UpcomingUpdate');
+  };
   return (
     <ScrollView>
       <Text style={styles.layoutText}>Admin Panel</Text>
@@ -67,6 +71,13 @@ function Admin() {
                   style={styles.btnExpo}
                   onPress={aaharExpoHandlers}>
                   <Text style={styles.btnboxText}>Aahar</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.boxAlign}>
+                <TouchableOpacity
+                  style={styles.btnExpo}
+                  onPress={UpcomingExpoUpdateHandler}>
+                  <Text style={styles.btnboxText}>Upcoming Expo Update</Text>
                 </TouchableOpacity>
               </View>
             </View>

@@ -25,6 +25,9 @@ function HomeScreen() {
   const PlastIndiaHandler = () => {
     navigation.navigate('PlastIndia');
   };
+  const UpcomingExpoHandler = () => {
+    navigation.navigate('UpcomingExpo');
+  };
 
   return (
     <ScrollView>
@@ -93,6 +96,13 @@ function HomeScreen() {
                   style={styles.btnExpo}
                   onPress={AaharExpoHandler}>
                   <Text style={styles.btnboxText}>Aahar</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.boxAlign}>
+                <TouchableOpacity
+                  style={styles.btnExpo}
+                  onPress={UpcomingExpoHandler}>
+                  <Text style={styles.btnboxText}>Upcoming Expo</Text>
                 </TouchableOpacity>
               </View>
             </View>

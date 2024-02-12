@@ -72,7 +72,7 @@ const Profile = ({navigation}) => {
       formData.append('state', userDetails.state);
       formData.append('zipcode', userDetails.zipcode);
       formData.append('websiteLink', userDetails.websiteLink);
-      formData.append('profile', userDetails.profile);
+      formData.append('profile', userDetails.profileImage);
       formData.append('email', userDetails.email);
 
       console.log(formData, '------->-fff------------');
