@@ -79,7 +79,7 @@ function CustomDrawerContent(props) {
           ) : (
             <Image
               source={{uri: profileImg}}
-              style={{height: 100, width: 100}}
+              style={{height: 100, width: 100, borderRadius: 50}}
             />
           )}
 

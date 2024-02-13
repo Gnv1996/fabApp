@@ -57,8 +57,7 @@ const Profile = ({navigation}) => {
       setProfileImg(data.profileImage);
       setImgProfile(data.profileImage);
       // setUserDetails({...userDetails, selectedImage: data.profileImage});
-      console.log(data, '------coming----------');
-      console.log(data.profileImage, '-----------------gopi');
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -102,7 +101,12 @@ const Profile = ({navigation}) => {
         setUserDetails(prev => {
           return {...prev, ...profileData};
         });
-        Alert.alert('Success', 'Profile updated successfully');
+        Alert.alert('Success', 'Profile updated successfully', [
+          {
+            text: 'OK',
+            onPress: () => fetchDataFromAPI(), // Reload profile data after update
+          },
+        ]);
       } else {
         Alert.alert(
           'Error',

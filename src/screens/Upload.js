@@ -30,8 +30,8 @@ function Upload() {
         type: [DocumentPicker.types.images],
       });
 
-      console.log('Picked document:', doc);
-      setSelectedImage(doc);
+      console.log('Picked document:', doc[0]);
+      setSelectedImage(doc[0]);
       setUploadTime(new Date().toLocaleString());
 
       const formData = new FormData();
