@@ -17,12 +17,13 @@ import Rating from '../screens/Rating';
 import Upload from '../screens/Upload';
 import Response from '../screens/Response';
 import Admin from '../admin/Admin';
-import UpdateScreen from '../screens/UpdateStatus';
+import Status from '../screens/Status';
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props) {
   const {handleLogout} = useContext(AuthContext);
+  const {profileImg} = useContext(AuthContext);
 
   const handleLogoutAction = () => {
     handleLogout();
@@ -70,10 +71,18 @@ function CustomDrawerContent(props) {
             marginTop: Platform.OS === 'android' ? 30 : 45,
             marginLeft: 20,
           }}>
-          <Image
-            source={require('../assests/man.png')}
-            style={{height: 100, width: 100}}
-          />
+          {!profileImg ? (
+            <Image
+              source={require('../assests/man.png')}
+              style={{height: 100, width: 100, borderRadius: 50}}
+            />
+          ) : (
+            <Image
+              source={{uri: profileImg}}
+              style={{height: 100, width: 100}}
+            />
+          )}
+
           <Text
             style={{
               fontSize: 25,
@@ -218,18 +227,18 @@ function MyDrawer() {
         }}
       />
 
-      {userRole == 2 && (
-        <Drawer.Screen
-          name="Upload Design"
-          component={Upload}
-          options={{
-            drawerLabel: 'Upload Design',
-            drawerIcon: ({focused}) => (
-              <Icon name="cloud-upload-outline" size={30} color="#808080" />
-            ),
-          }}
-        />
-      )}
+      {/* {userRole == 2 && ( */}
+      <Drawer.Screen
+        name="Upload Design"
+        component={Upload}
+        options={{
+          drawerLabel: 'Upload Design',
+          drawerIcon: ({focused}) => (
+            <Icon name="cloud-upload-outline" size={30} color="#808080" />
+          ),
+        }}
+      />
+      {/* )} */}
 
       <Drawer.Screen
         name="Ratings"
@@ -252,12 +261,12 @@ function MyDrawer() {
         }}
       />
       <Drawer.Screen
-        name="Update"
-        component={UpdateScreen}
+        name="Status"
+        component={Status}
         options={{
-          drawerLabel: 'Update',
+          drawerLabel: 'Work Status',
           drawerIcon: ({focused}) => (
-            <Icon name="sync-outline" size={30} color="#808080" />
+            <Icon name="person-circle-outline" size={30} color="#808080" />
           ),
         }}
       />

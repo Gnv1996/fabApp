@@ -1,12 +1,28 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
-import DocumentPicker from 'react-native-document-picker'; // Make sure to import DocumentPicker
-import axios from 'axios'; // Import Axios
+import DocumentPicker from 'react-native-document-picker';
+import api from '../utils/api';
 import colors from '../styles/colors';
+import {AuthContext} from '../contexts/AuthContext';
 
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadTime, setUploadTime] = useState(null);
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const {userID} = useContext(AuthContext);
+
+  useEffect(() => {
+    fetchUploadedImages();
+  }, []);
+
+  const fetchUploadedImages = async () => {
+    try {
+      const response = await api.get(`/requirement/status/${userID}`);
+      setUploadedImages(response.data.res);
+    } catch (error) {
+      console.log('Error fetching uploaded images:', error);
+    }
+  };
 
   const uploadImageHandler = async () => {
     try {
@@ -15,30 +31,67 @@ function Upload() {
       });
 
       console.log('Picked document:', doc);
-      setSelectedImage(doc.uri);
+      setSelectedImage(doc);
       setUploadTime(new Date().toLocaleString());
 
-      // Convert image URI to blob
       const formData = new FormData();
-      formData.append('image', {
-        uri: doc.uri,
-        name: 'image.jpg',
-        type: 'image/jpeg',
-      });
+      formData.append('progress', selectedImage);
 
-      // Send image to backend API
-      const response = await axios.post('YOUR_API_ENDPOINT', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await api.put(
+        `/requirement/status/${userID}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
       console.log('Image uploaded:', response.data);
+      fetchUploadedImages();
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         console.log('Document picking cancelled');
       } else {
         console.log('Error picking document:', err);
       }
+    }
+  };
+
+  const removeImageHandler = async imageId => {
+    try {
+      await api.put(`/requirement/remove/${userID}/${imageId}`);
+      setUploadedImages(prevImages =>
+        prevImages.filter(image => image.id !== imageId),
+      );
+      setSelectedImage(null);
+      setUploadTime(null);
+    } catch (error) {
+      console.log('Error removing image:', error);
+    }
+  };
+
+  const submitImagesHandler = async () => {
+    try {
+      for (const image of uploadedImages) {
+        const formData = new FormData();
+        formData.append('progress', selectedImage);
+        console.log(formData, '----checking payload----');
+
+        const response = await api.put(
+          `/requirement/status/${userID}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          },
+        );
+        console.log('Image uploaded:', response.data);
+        console.log(formData, 'data showing---->--');
+      }
+      fetchUploadedImages();
+    } catch (error) {
+      console.log('Error uploading images:', error);
     }
   };
 
@@ -59,29 +112,23 @@ function Upload() {
         </View>
       )}
 
-      <View style={{marginTop: 20}}>
-        <TouchableOpacity style={styles.btn}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: 18,
-              color: 'black',
-            }}>
-            Save
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Display uploaded image here */}
-      {selectedImage && (
-        <View style={{alignItems: 'center', marginTop: 20}}>
-          <Image source={{uri: selectedImage}} style={styles.selectedImage} />
+      {uploadedImages.map(image => (
+        <View key={image.id} style={{alignItems: 'center', marginTop: 20}}>
+          <Image source={{uri: image.url}} style={styles.selectedImage} />
+          <TouchableOpacity onPress={() => removeImageHandler(image.id)}>
+            <Text style={{color: 'red', marginTop: 5}}>Remove</Text>
+          </TouchableOpacity>
           <Text style={{color: colors.black, marginBottom: 10}}>
-            Uploaded Time: {uploadTime}
+            Uploaded Time: {image.uploadTime}
           </Text>
         </View>
-      )}
+      ))}
+
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={submitImagesHandler}>
+        <Text style={{color: colors.white}}>Submit</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -110,11 +157,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 10,
   },
-  btn: {
-    backgroundColor: colors.orange,
-    width: '100%',
+  submitButton: {
+    backgroundColor: colors.blue,
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
   },
 });
 

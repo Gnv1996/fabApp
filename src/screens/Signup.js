@@ -70,6 +70,7 @@ const SignupScreen = ({navigation}) => {
       }
     } catch (error) {
       console.log(error);
+      Alert.alert('Success', response.data.message);
     } finally {
       setIsSigningUp(false); // Finish signup process
     }

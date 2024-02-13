@@ -164,6 +164,8 @@ function UserInfo() {
       console.log('Response:', response.data);
       // Handle response according to your requirements
 
+      console.log(budget, 'value -------->--------');
+
       console.log(dataToSend, '--->---requirement Form---');
       Alert.alert('Your Data is Successfully Save. ');
     } catch (error) {

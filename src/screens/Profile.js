@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -17,11 +17,14 @@ import api from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import FormData from 'form-data';
+import DocumentPicker from 'react-native-document-picker';
+import {AuthContext} from '../contexts/AuthContext';
 
 const Profile = ({navigation}) => {
   const [userRole, setUserRole] = useState('');
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
+  const [imgProfile, setImgProfile] = useState('');
   const [userDetails, setUserDetails] = useState({
     companyName: '',
     mobileNumber: '',
@@ -30,9 +33,11 @@ const Profile = ({navigation}) => {
     state: '',
     zipcode: '',
     websiteLink: '',
-    profileImage: '',
+    selectedImage: '',
   });
+
   const [loading, setLoading] = useState(true);
+  const {setProfileImg} = useContext(AuthContext);
 
   const fetchDataFromAPI = async () => {
     try {
@@ -49,6 +54,11 @@ const Profile = ({navigation}) => {
       // console.log(response, '=======>======');
       const data = response.data.profileData;
       setUserDetails(prev => ({...prev, ...data}));
+      setProfileImg(data.profileImage);
+      setImgProfile(data.profileImage);
+      // setUserDetails({...userDetails, selectedImage: data.profileImage});
+      console.log(data, '------coming----------');
+      console.log(data.profileImage, '-----------------gopi');
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -72,13 +82,14 @@ const Profile = ({navigation}) => {
       formData.append('state', userDetails.state);
       formData.append('zipcode', userDetails.zipcode);
       formData.append('websiteLink', userDetails.websiteLink);
-      formData.append('profile', userDetails.profileImage);
+      formData.append('profile', userDetails.selectedImage);
       formData.append('email', userDetails.email);
 
       console.log(formData, '------->-fff------------');
       const response = await api.put('/user/update/profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${AsyncStorage.getItem('userToken')}`,
         },
       });
       // console.log(response, '--->--');
@@ -104,13 +115,26 @@ const Profile = ({navigation}) => {
     }
   };
 
-  const uploadImageHandler = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
-      if (!response.didCancel && !response.error) {
-        setUserDetails({...userDetails, profileImage: response.uri});
-      }
-    });
+  const uploadImageHandler = async () => {
+    try {
+      const doc = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images],
+      });
+      console.log('Picked document:', doc);
+      setUserDetails({...userDetails, selectedImage: doc[0]});
+      // setSelectedImage(doc[0].uri);
+    } catch (error) {
+      console.error('Error picking document:', error);
+    }
   };
+
+  // const uploadImageHandler = () => {
+  //   launchImageLibrary({mediaType: 'photo'}, response => {
+  //     if (!response.didCancel && !response.error) {
+  //       setUserDetails({...userDetails, profileImage: response.uri});
+  //     }
+  //   });
+  // };
 
   const requestGalleryPermission = async () => {
     if (Platform.OS === 'android') {
@@ -225,9 +249,11 @@ const Profile = ({navigation}) => {
           </TouchableOpacity>
           <View style={styles.detail}>
             <View style={styles.first}>
-              {userDetails.profileImage ? (
+              {imgProfile ? (
                 <Image
-                  source={{uri: userDetails.profileImage}}
+                  source={{
+                    uri: imgProfile,
+                  }}
                   style={styles.profileImage}
                 />
               ) : (
@@ -306,7 +332,7 @@ const Profile = ({navigation}) => {
               style={styles.user_info}
               textHeader={'Zip Code'}
               placeholder={'Enter your Zip Code'}
-              value={userDetails.zipcode.toString()}
+              value={userDetails.zipcode?.toString()}
               onChangeText={text =>
                 setUserDetails({...userDetails, zipcode: text})
               }
@@ -429,8 +455,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   profileImage: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     borderRadius: 100,
     marginBottom: 20,
   },

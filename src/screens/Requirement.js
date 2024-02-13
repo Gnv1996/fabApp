@@ -39,16 +39,18 @@ function Requirement() {
   const buttonAcceptHandler = async () => {
     try {
       // Make API call to accept the requirement
-      await api.post('/requirement/accept', {userID});
+      await api.put(`/requirement/accept/${userID}`);
 
       // Show success alert
       Alert.alert('You Accepted Fabrication Successfully');
+      console.log(userID, '----v---');
 
       // Refetch data from API
       fetchDataFromApi();
     } catch (error) {
       console.error('Error accepting requirement:', error);
       // Show error alert if API call fails
+      console.log(userID, '----v---');
       Alert.alert('Error accepting requirement. Please try again.');
     }
   };
