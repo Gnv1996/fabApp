@@ -42,7 +42,8 @@ const AuthProvider = ({children}) => {
     AsyncStorage.removeItem('userFullName');
     AsyncStorage.removeItem('userEmail');
     AsyncStorage.removeItem('ForgetToken');
-    AsyncStorage.removeItem('OtpToken')
+    AsyncStorage.removeItem('OtpToken');
+    AsyncStorage.removeItem('ExpoId')
 
       .then(() => {
         setUserLoggedIn(false);

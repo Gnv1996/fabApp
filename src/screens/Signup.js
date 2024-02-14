@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignupScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [fullname, setFullname] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -52,7 +52,7 @@ const SignupScreen = ({navigation}) => {
     setIsSigningUp(true);
     try {
       const response = await api.post('/user/auth/signup/', {
-        fullName,
+        fullname,
         email,
         password,
         confirmPassword,
@@ -90,8 +90,8 @@ const SignupScreen = ({navigation}) => {
         <Text style={{color: colors.red, textAlign: 'right'}}>{error}</Text>
         <FormInput
           textHeader={'Full Name'}
-          value={fullName}
-          onChangeText={text => setFullName(text)}
+          value={fullname}
+          onChangeText={text => setFullname(text)}
           placeholder={'Full Name'}
         />
         <FormInput

@@ -24,6 +24,7 @@ function LoginScreen({navigation}) {
   const [isVisible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isResetVisible, setResetVisible] = useState(false);
+  const [response, setResponse] = useState('');
 
   const handleLoginSubmit = async () => {
     if (!email || !password) {
@@ -36,6 +37,7 @@ function LoginScreen({navigation}) {
       const response = await api.post('/user/auth/signin/', {email, password});
       const {success, accessToken, user} = response.data;
       console.log(response.data, '->->->->');
+      setResponse(response.message);
 
       if (success == true) {
         await AsyncStorage.setItem('userRole', user.role).catch(console.error);
@@ -45,11 +47,15 @@ function LoginScreen({navigation}) {
         handleLogin(accessToken);
       } else {
         setError('An error occurred during login.');
+        Alert.alert(response, 'Error');
       }
     } catch (error) {
       console.log(error);
       setError('An error occurred during login.');
-      Alert.alert('Please Check Email and Password');
+      if (error?.response) {
+        Alert.alert('Error', error.response.data.message);
+      }
+      console.log(error?.response?.data?.message, '->->->->');
     } finally {
       setLoading(false);
       setTimeout(() => {

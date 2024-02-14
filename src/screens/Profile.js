@@ -94,7 +94,7 @@ const Profile = ({navigation}) => {
       // console.log(response, '--->--');
       const responseData = response.data;
       // console.log(responseData);
-      5;
+      ;
 
       if (response.data) {
         const profileData = responseData.profile;

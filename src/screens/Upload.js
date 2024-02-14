@@ -18,7 +18,7 @@ function Upload() {
   const fetchUploadedImages = async () => {
     try {
       const response = await api.get(`/requirement/status/${userID}`);
-      setUploadedImages(response.data.res);
+      setUploadedImages(response.data.images);
     } catch (error) {
       console.log('Error fetching uploaded images:', error);
     }
@@ -30,8 +30,8 @@ function Upload() {
         type: [DocumentPicker.types.images],
       });
 
-      console.log('Picked document:', doc[0]);
-      setSelectedImage(doc[0]);
+      console.log('Picked document:', doc);
+      setSelectedImage(doc[0].uri);
       setUploadTime(new Date().toLocaleString());
 
       const formData = new FormData();
@@ -75,7 +75,6 @@ function Upload() {
       for (const image of uploadedImages) {
         const formData = new FormData();
         formData.append('progress', selectedImage);
-        console.log(formData, '----checking payload----');
 
         const response = await api.put(
           `/requirement/status/${userID}`,
@@ -111,7 +110,7 @@ function Upload() {
           </Text>
         </View>
       )}
-
+      {/* 
       {uploadedImages.map(image => (
         <View key={image.id} style={{alignItems: 'center', marginTop: 20}}>
           <Image source={{uri: image.url}} style={styles.selectedImage} />
@@ -122,7 +121,7 @@ function Upload() {
             Uploaded Time: {image.uploadTime}
           </Text>
         </View>
-      ))}
+      ))} */}
 
       <TouchableOpacity
         style={styles.submitButton}
