@@ -22,7 +22,7 @@ function AutoUpdate({navigation}) {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [adminData, setAdminData] = useState({
-    title: 'Auto',
+    title: 'AutoExpo',
     eventDate: '',
     imageURL: '',
     venue: '',
@@ -195,7 +195,7 @@ function AutoUpdate({navigation}) {
 
   return (
     <ScrollView>
-      <Text style={styles.layoutText}>{adminData.title} Expo</Text>
+      <Text style={styles.layoutText}>{adminData.title}</Text>
       <View style={styles.component}>
         <FormInput
           textHeader="Event Date"

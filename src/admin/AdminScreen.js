@@ -5,42 +5,43 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import {Table, Row} from 'react-native-table-component';
-import axios from 'axios';
 import colors from '../styles/colors';
+import api from '../utils/api';
 
 const AdminScreen = () => {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isExhibitorList, setIsExhibitorList] = useState(true); // Default to Exhibitor List
 
-  const tableHead = ['Company Name', 'Full Name', 'Mobile', 'Actions'];
+  const tableHead = ['Full Name', 'Email', 'Actions'];
 
-  const getApiEndpoint = () => {
-    return isExhibitorList
-      ? 'https://your-api-endpoint.com/exhibitorData'
-      : 'https://your-api-endpoint.com/fabricatorData';
+  const fetchDataFromAPI = async () => {
+    try {
+      const response = await api.get('/user/get_users');
+      if (Array.isArray(response.data)) {
+        setTableData(response.data);
+      } else if (
+        response.data &&
+        response.data.users &&
+        Array.isArray(response.data.users)
+      ) {
+        setTableData(response.data.users);
+      } else {
+        console.error('Invalid data structure returned from API');
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    // Replace the following URL with your actual API endpoint
-    axios
-      .get(getApiEndpoint())
-      .then(response => {
-        if (Array.isArray(response.data)) {
-          setTableData(response.data);
-          setLoading(false);
-        } else {
-          console.error('Invalid data format. Expected an array.');
-          setLoading(false);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      });
-  }, [isExhibitorList]);
+    fetchDataFromAPI();
+  }, []);
 
   const handleActionButtonClick = (action, rowData) => {
     // Handle action button click for the corresponding row data
@@ -58,7 +59,7 @@ const AdminScreen = () => {
 
   const handleToggle = () => {
     setIsExhibitorList(prev => !prev);
-    setLoading(true); // Reset loading state when toggling
+    setLoading(true);
   };
 
   return (
@@ -73,28 +74,39 @@ const AdminScreen = () => {
           </Text>
         </TouchableOpacity>
         {loading ? (
-          <Text>Loading...</Text>
+          <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
             <Row data={tableHead} style={styles.head} textStyle={styles.text} />
-            {tableData.map((rowData, index) => (
-              <Row
-                key={index}
-                data={[
-                  ...rowData,
-                  <TouchableOpacity
-                    onPress={() => handleActionButtonClick('view', rowData)}>
-                    <Text style={styles.actionButton}>View</Text>
-                  </TouchableOpacity>,
-                  <TouchableOpacity
-                    onPress={() => handleActionButtonClick('delete', rowData)}>
-                    <Text style={styles.actionButton}>Delete</Text>
-                  </TouchableOpacity>,
-                ]}
-                style={styles.row}
-                textStyle={styles.text}
-              />
-            ))}
+            {tableData.map((rowData, index) => {
+              // Check if rowData is not null or undefined
+              if (
+                rowData &&
+                ((isExhibitorList && rowData.role === '1') ||
+                  (!isExhibitorList && rowData.role === '2'))
+              ) {
+                return (
+                  <Row
+                    key={index}
+                    data={[
+                      rowData.fullname,
+                      rowData.email,
+                      <TouchableOpacity
+                        key={'delete_' + index}
+                        onPress={() =>
+                          handleActionButtonClick('delete', rowData)
+                        }>
+                        <Text style={styles.actionButton}>Delete</Text>
+                      </TouchableOpacity>,
+                    ]}
+                    style={styles.row}
+                    textStyle={styles.text}
+                  />
+                );
+              } else {
+                return <Text>Loading</Text>; // If the rowData is null or the role doesn't match, render nothing
+              }
+            })}
           </Table>
         )}
       </View>

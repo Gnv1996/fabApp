@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import axios from 'axios';
+import api from '../utils/api';
 import {useNavigation} from '@react-navigation/native';
 
 import colors from '../styles/colors';
@@ -19,18 +19,30 @@ function UpcomingExpo() {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
+  const fetchDataFromAPI = async () => {
+    try {
+      const response = await api.get('/exhibition/get');
+      const allExhibitions = response.data.exhibition;
+      const filteredExhibition = allExhibitions.find(
+        exhibition => exhibition.title === 'Upcoming',
+      );
+
+      if (filteredExhibition) {
+        setEventData(filteredExhibition);
+        setImageUrl(filteredExhibition.imageURL);
+        setLoading(false);
+      } else {
+        console.error('Exhibition not found.');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get('https://api.example.com/events') // Replace with your actual API endpoint
-      .then(response => {
-        setEventData(response.data);
-        setImageUrl(response.data.imageUrl); // Replace 'imageUrl' with the actual key in your API response
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      });
+    fetchDataFromAPI();
   }, []);
 
   if (loading) {
@@ -47,7 +59,8 @@ function UpcomingExpo() {
   const buttonRejectHandler = () => {
     navigation.navigate('home');
   };
-  const {eventDate, location, timePeriod, description} = eventData;
+
+  const {eventDate, venue, timePeriod, description} = eventData;
 
   return (
     <ScrollView>
@@ -62,13 +75,11 @@ function UpcomingExpo() {
         <View style={styles.component}>
           <Text style={styles.label}>Event Date:-</Text>
           <Text style={{fontSize: 17}}>{eventDate}</Text>
-
           <Text style={styles.label}>Venue:-</Text>
-          <Text style={{fontSize: 17}}>{location} </Text>
-
+          <Text style={{fontSize: 17}}>{venue} </Text>
+          {/* Displaying venue here */}
           <Text style={styles.label}>Time of Event :-</Text>
           <Text style={{fontSize: 17}}>{timePeriod}</Text>
-
           <Text style={styles.label}>Description:-</Text>
           <Text style={{fontSize: 17}}>{description}</Text>
         </View>
@@ -129,7 +140,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
   },
-
   layoutText: {
     borderWidth: 2,
     borderColor: colors.gray,
@@ -139,6 +149,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 27,
+    margin: 20,
   },
   component: {
     marginVertical: 20,
@@ -148,81 +159,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.black,
     marginVertical: 5,
-  },
-  input: {
-    height: 90,
-    borderWidth: 1,
-    borderColor: colors.gray,
-    borderRadius: 7,
-    padding: 10,
-  },
-  heading: {
-    fontWeight: 'bold',
-    fontSize: 23,
-    color: colors.black,
-    marginVertical: 10,
-  },
-  imagePickerButton: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 5,
-    marginTop: 10,
-  },
-  btn: {
-    backgroundColor: colors.orange,
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  btnText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 18,
-    color: 'black',
-  },
-  imagePickerButton: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 5,
-    marginTop: 10,
-  },
-  selectedImage: {
-    width: 200,
-    height: 200,
-    resizeMode: 'cover',
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  layoutText: {
-    borderWidth: 2,
-    borderColor: colors.gray,
-    padding: 15,
-    borderRadius: 10,
-    margin: 20,
-    color: colors.black,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 27,
-  },
-  layoutHeading: {
-    borderRadius: 10,
-    color: colors.black,
-    fontWeight: 'bold',
-    fontSize: 27,
-    borderBottomColor: 'red',
-    borderBottomWidth: 2,
-  },
-  heading: {
-    fontWeight: 'bold',
-    fontSize: '23',
-    color: colors.black,
-    margin: 10,
   },
   btnAccept: {
     backgroundColor: colors.green,
@@ -250,9 +186,22 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     justifyContent: 'center',
   },
+  layoutHeading: {
+    borderRadius: 10,
+    color: colors.black,
+    fontWeight: 'bold',
+    fontSize: 27,
+    borderBottomColor: 'red',
+    borderBottomWidth: 2,
+  },
   imgStyle: {
     height: 300,
     width: '100%',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
