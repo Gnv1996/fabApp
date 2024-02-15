@@ -163,11 +163,11 @@ function UserInfo() {
 
       console.log('Response:', response.data);
       // Handle response according to your requirements
-
-      console.log(budget, 'value -------->--------');
+      if (response.status == true) {
+        Alert.alert('Your Data is Successfully Save. ');
+      }
 
       console.log(dataToSend, '--->---requirement Form---');
-      Alert.alert('Your Data is Successfully Save. ');
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Please Enter all Details Error ');

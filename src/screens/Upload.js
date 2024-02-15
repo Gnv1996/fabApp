@@ -1,5 +1,14 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import api from '../utils/api';
 import colors from '../styles/colors';
@@ -7,8 +16,10 @@ import {AuthContext} from '../contexts/AuthContext';
 
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageshow, setImageshow] = useState(null);
   const [uploadTime, setUploadTime] = useState(null);
-  const [uploadedImages, setUploadedImages] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState(null);
+  const [loading, setLoading] = useState(false);
   const {userID} = useContext(AuthContext);
 
   useEffect(() => {
@@ -17,10 +28,16 @@ function Upload() {
 
   const fetchUploadedImages = async () => {
     try {
-      const response = await api.get(`/requirement/status/${userID}`);
-      setUploadedImages(response.data.images);
+      setLoading(true);
+      const response = await api.get(`/requirement/get/${userID}`);
+      const apiResponse = response.data.userRequirement;
+      console.log(userID, 'image id required');
+      console.log(apiResponse.acceptedBy.progress[0], '--govhh--data');
+      setUploadedImages(apiResponse.acceptedBy.progress);
+      setLoading(false);
     } catch (error) {
       console.log('Error fetching uploaded images:', error);
+      setLoading(false);
     }
   };
 
@@ -29,13 +46,24 @@ function Upload() {
       const doc = await DocumentPicker.pick({
         type: [DocumentPicker.types.images],
       });
-
       console.log('Picked document:', doc);
-      setSelectedImage(doc[0].uri);
-      setUploadTime(new Date().toLocaleString());
+      setSelectedImage(doc[0]);
+      setImageshow(doc[0].uri);
+      console.log(doc[0], '---data---');
+      setUploadTime();
+    } catch (error) {
+      console.error('Error picking document:', error);
+    }
+  };
 
+  console.log(userID, '------this is id used in Images');
+
+  const submitImagesHandler = async () => {
+    try {
       const formData = new FormData();
       formData.append('progress', selectedImage);
+      console.log(formData, '---data Showing');
+      console.log(selectedImage, 'uploading image');
 
       const response = await api.put(
         `/requirement/status/${userID}`,
@@ -46,89 +74,65 @@ function Upload() {
           },
         },
       );
-      console.log('Image uploaded:', response.data);
-      fetchUploadedImages();
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('Document picking cancelled');
-      } else {
-        console.log('Error picking document:', err);
-      }
-    }
-  };
 
-  const removeImageHandler = async imageId => {
-    try {
-      await api.put(`/requirement/remove/${userID}/${imageId}`);
-      setUploadedImages(prevImages =>
-        prevImages.filter(image => image.id !== imageId),
-      );
-      setSelectedImage(null);
-      setUploadTime(null);
+      console.log(response, 'data');
+      Alert.alert('Image Upload Successfully');
+      setImageshow('');
     } catch (error) {
-      console.log('Error removing image:', error);
+      console.log('Error in Upload Image');
+
+      Alert.alert('Error', 'An error occurred while updating Image');
     }
   };
 
-  const submitImagesHandler = async () => {
-    try {
-      for (const image of uploadedImages) {
-        const formData = new FormData();
-        formData.append('progress', selectedImage);
-
-        const response = await api.put(
-          `/requirement/status/${userID}`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          },
-        );
-        console.log('Image uploaded:', response.data);
-        console.log(formData, 'data showing---->--');
-      }
-      fetchUploadedImages();
-    } catch (error) {
-      console.log('Error uploading images:', error);
-    }
-  };
+  console.log(uploadedImages, 'images link visible--->');
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.imagePickerButton}
-        onPress={uploadImageHandler}>
-        <Text style={{color: colors.black}}>Upload Image</Text>
-      </TouchableOpacity>
+    <ScrollView>
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.imagePickerButton}
+          onPress={uploadImageHandler}>
+          <Text style={{color: colors.black}}>Upload Image</Text>
+        </TouchableOpacity>
 
-      {selectedImage && (
-        <View style={{alignItems: 'center', marginTop: 20}}>
-          <Image source={{uri: selectedImage}} style={styles.selectedImage} />
-          <Text style={{color: colors.black, marginBottom: 10}}>
-            Uploaded Time: {uploadTime}
-          </Text>
-        </View>
+        {imageshow && (
+          <View style={{alignItems: 'center', marginTop: 20}}>
+            <Image source={{uri: imageshow}} style={styles.selectedImage} />
+            <Text style={{color: colors.black, marginBottom: 10}}>
+              Uploaded Time: {uploadTime}
+            </Text>
+          </View>
+        )}
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={submitImagesHandler}>
+          <Text style={{color: colors.white}}>Submit</Text>
+        </TouchableOpacity>
+      </View>
+      {/* Loader */}
+      {loading && (
+        <ActivityIndicator
+          size="large"
+          color={colors.blue}
+          style={{marginTop: 20}}
+        />
       )}
-      {/* 
-      {uploadedImages.map(image => (
-        <View key={image.id} style={{alignItems: 'center', marginTop: 20}}>
-          <Image source={{uri: image.url}} style={styles.selectedImage} />
-          <TouchableOpacity onPress={() => removeImageHandler(image.id)}>
-            <Text style={{color: 'red', marginTop: 5}}>Remove</Text>
-          </TouchableOpacity>
-          <Text style={{color: colors.black, marginBottom: 10}}>
-            Uploaded Time: {image.uploadTime}
-          </Text>
-        </View>
-      ))} */}
 
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={submitImagesHandler}>
-        <Text style={{color: colors.white}}>Submit</Text>
-      </TouchableOpacity>
-    </View>
+      {/* Display uploaded images */}
+      {!loading &&
+        uploadedImages.map(image => (
+          <View key={image.id} style={{alignItems: 'center', marginTop: 20}}>
+            <Image source={{uri: image.uri}} style={styles.selectedImage} />
+            <TouchableOpacity onPress={() => removeImageHandler(image.id)}>
+              <Text style={{color: 'red', marginTop: 5}}>Remove</Text>
+            </TouchableOpacity>
+            <Text style={{color: colors.black, marginBottom: 10}}>
+              Uploaded Time: {image.uploadTime}
+            </Text>
+          </View>
+        ))}
+    </ScrollView>
   );
 }
 

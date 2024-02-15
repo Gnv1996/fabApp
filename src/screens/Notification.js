@@ -22,9 +22,10 @@ function Notification({navigation}) {
         const response = await api.get('/requirement/get_all');
         const apiResponse = response.data.userRequirements;
         if (Array.isArray(apiResponse) && apiResponse.length > 0) {
-          setNotification(apiResponse[0]);
+          setNotification(apiResponse[1]);
+          setUserId(notification.apiResponse._id);
 
-          console.log(apiResponse, '===');
+          // console.log(apiResponse[1]._id, '====id of object==');
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -36,7 +37,7 @@ function Notification({navigation}) {
 
   const handleViewClick = id => {
     console.log(`Clicked on notification with id: ${id}`);
-    setUserId(id);
+    setUserId(notification._id);
     navigation.navigate('Requirement');
   };
 
@@ -48,6 +49,8 @@ function Notification({navigation}) {
     );
   }
 
+
+
   return (
     <ScrollView>
       <TouchableOpacity
@@ -57,7 +60,7 @@ function Notification({navigation}) {
           <Icon name="notifications-circle" size={50} color="#808080" />
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.titleName}>upcoming Event</Text>
+          <Text style={styles.titleName}>New Notifications</Text>
 
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.titlePostion}>{notification.furniture}</Text>

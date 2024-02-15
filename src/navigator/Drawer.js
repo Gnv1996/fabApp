@@ -18,6 +18,7 @@ import Upload from '../screens/Upload';
 import Response from '../screens/Response';
 import Admin from '../admin/Admin';
 import Status from '../screens/Status';
+import FabricationPanel from '../screens/FabricationPanel';
 
 const Drawer = createDrawerNavigator();
 
@@ -265,6 +266,17 @@ function MyDrawer() {
         component={Status}
         options={{
           drawerLabel: 'Work Status',
+          drawerIcon: ({focused}) => (
+            <Icon name="person-circle-outline" size={30} color="#808080" />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="Fabrication Panel"
+        component={FabricationPanel}
+        options={{
+          drawerLabel: 'Fabrication Panel',
           drawerIcon: ({focused}) => (
             <Icon name="person-circle-outline" size={30} color="#808080" />
           ),

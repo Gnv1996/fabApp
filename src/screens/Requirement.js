@@ -41,7 +41,6 @@ function Requirement() {
       // Make API call to accept the requirement
       await api.put(`/requirement/accept/${userID}`);
 
-      // Show success alert
       Alert.alert('You Accepted Fabrication Successfully');
       console.log(userID, '----v---');
 
@@ -57,7 +56,7 @@ function Requirement() {
 
   const buttonRejectHandler = async () => {
     try {
-      await api.post('/requirement/reject', {userID});
+      await api.put(`/requirement/reject/${userID}`);
 
       // Show success alert
       Alert.alert('You Rejected! Successfully');
