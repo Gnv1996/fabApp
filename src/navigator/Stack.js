@@ -157,6 +157,13 @@ function Stacks() {
               title: 'Upcoming Expo',
             }}
           />
+          <Stack.Screen
+            name="Notification"
+            component={Notification}
+            options={{
+              title: 'Notification',
+            }}
+          />
         </Stack.Navigator>
       )}
     </>

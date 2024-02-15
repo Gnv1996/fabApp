@@ -13,21 +13,27 @@ import colors from '../styles/colors';
 import {useNavigation} from '@react-navigation/native';
 import api from '../utils/api';
 import {AuthContext} from '../contexts/AuthContext';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Requirement() {
   const [tableData, setTableData] = useState([]);
   const [apiData, setApiData] = useState(null); // Store API response directly
   const [loading, setLoading] = useState(true); // State to track loading
-  const {userID} = useContext(AuthContext);
   const navigation = useNavigation();
+  // const [userID, setUserID] = useState('');
+  const {UsersID} = useContext(AuthContext);
 
   useEffect(() => {
     fetchDataFromApi();
   }, []);
 
   const fetchDataFromApi = async () => {
+    // const UserId = await AsyncStorage.getItem('userID');
+    // setUserID(UserId);
+
     try {
-      const response = await api.get(`/requirement/get/${userID}`);
+      const response = await api.get(`/requirement/get/${UsersID}`);
+      console.log(response, '------------------');
       setApiData(response.data.userRequirement);
     } catch (error) {
       console.error('Error fetching data from API:', error);
@@ -38,11 +44,10 @@ function Requirement() {
 
   const buttonAcceptHandler = async () => {
     try {
-      // Make API call to accept the requirement
-      await api.put(`/requirement/accept/${userID}`);
+      await api.put(`/requirement/accept/${UsersID}`);
 
       Alert.alert('You Accepted Fabrication Successfully');
-      console.log(userID, '----v---');
+      console.log(UsersID, '----v---');
 
       // Refetch data from API
       fetchDataFromApi();
@@ -56,7 +61,7 @@ function Requirement() {
 
   const buttonRejectHandler = async () => {
     try {
-      await api.put(`/requirement/reject/${userID}`);
+      await api.put(`/requirement/reject/${UsersID}`);
 
       // Show success alert
       Alert.alert('You Rejected! Successfully');

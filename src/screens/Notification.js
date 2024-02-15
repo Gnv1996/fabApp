@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect,useContext} from 'react';
 import api from '../utils/api';
 import {
   View,
@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '../contexts/AuthContext';
 
 function Notification({navigation}) {
-  const [notification, setNotification] = useState(null);
-
-  const {setUserId} = useContext(AuthContext);
+  const [notifications, setNotifications] = useState([]);
+  const {setUsersID} = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,10 +22,8 @@ function Notification({navigation}) {
         const response = await api.get('/requirement/get_all');
         const apiResponse = response.data.userRequirements;
         if (Array.isArray(apiResponse) && apiResponse.length > 0) {
-          setNotification(apiResponse[1]);
-          setUserId(notification.apiResponse._id);
-
-          // console.log(apiResponse[1]._id, '====id of object==');
+          setNotifications(apiResponse);
+          // console.log(apiResponse, '---->----fetching data---');
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -37,40 +35,44 @@ function Notification({navigation}) {
 
   const handleViewClick = id => {
     console.log(`Clicked on notification with id: ${id}`);
-    setUserId(notification._id);
+    setUsersID(id);
+    // AsyncStorage.setItem('userID', id);
+
     navigation.navigate('Requirement');
   };
 
-  if (!notification) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading...</Text>
-      </View>
-    );
-  }
-
-
-
   return (
     <ScrollView>
-      <TouchableOpacity
-        onPress={() => handleViewClick(notification._id)}
-        style={styles.notificationContainer}>
-        <View style={styles.iconContainer}>
-          <Icon name="notifications-circle" size={50} color="#808080" />
+      {notifications.length === 0 ? (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.titleName}>New Notifications</Text>
-
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.titlePostion}>{notification.furniture}</Text>
-            <Text style={styles.titlePostion}>{notification.budget}</Text>
-            <Text style={styles.titlePostion}>{notification.carpetColor}</Text>
-            <Text style={styles.titlePostion}>{notification.branding}</Text>
-            <Text style={styles.titlePostion}>{notification.stallNumber}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+      ) : (
+        notifications.map(notification => (
+          <TouchableOpacity
+            key={notification._id}
+            onPress={() => handleViewClick(notification._id)}
+            style={styles.notificationContainer}>
+            <View style={styles.iconContainer}>
+              <Icon name="notifications-circle" size={50} color="#808080" />
+            </View>
+            <View style={styles.textContainer}>
+              <Text style={styles.titleName}>New Notifications</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.titlePostion}>
+                  {notification.furniture}
+                </Text>
+                <Text style={styles.titlePostion}>
+                  {notification.createdAt}
+                </Text>
+                <Text style={styles.titlePostion}>
+                  {notification.carpetColor}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))
+      )}
     </ScrollView>
   );
 }

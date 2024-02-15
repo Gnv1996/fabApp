@@ -153,25 +153,20 @@ function UserInfo() {
       budget,
       comment,
     };
+    // console.log(dataToSend, '------------data filled--');
 
     try {
-      const response = await api.post('/requirement/set', dataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await api.post('/requirement/set', dataToSend);
 
-      console.log('Response:', response.data);
-      // Handle response according to your requirements
-      if (response.status == true) {
-        Alert.alert('Your Data is Successfully Save. ');
+      // console.log('Response:', response.data);
+      if (response.data.success == true) {
+        Alert.alert('Your Data is Successfully Saved.');
+      } else {
+        Alert.alert('Failed to save data. Please try again.');
       }
-
-      console.log(dataToSend, '--->---requirement Form---');
     } catch (error) {
       console.error('Error:', error);
-      Alert.alert('Please Enter all Details Error ');
-      // Handle error
+      Alert.alert('Error occurred while saving data. Please try again.');
     }
   };
 

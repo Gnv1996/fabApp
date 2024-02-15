@@ -12,27 +12,30 @@ import {
 import DocumentPicker from 'react-native-document-picker';
 import api from '../utils/api';
 import colors from '../styles/colors';
-import {AuthContext} from '../contexts/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageshow, setImageshow] = useState(null);
   const [uploadTime, setUploadTime] = useState(null);
-  const [uploadedImages, setUploadedImages] = useState(null);
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {userID} = useContext(AuthContext);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [userID, setUserID] = useState('');
 
   useEffect(() => {
     fetchUploadedImages();
-  }, []);
+  }, []); // Empty dependency array to run only once when component mounts
 
   const fetchUploadedImages = async () => {
+    const UserID = await AsyncStorage.getItem('userID');
+    setUserID(UserID);
     try {
       setLoading(true);
       const response = await api.get(`/requirement/get/${userID}`);
       const apiResponse = response.data.userRequirement;
       console.log(userID, 'image id required');
-      console.log(apiResponse.acceptedBy.progress[0], '--govhh--data');
+      console.log(apiResponse.acceptedBy, '--go india--data');
       setUploadedImages(apiResponse.acceptedBy.progress);
       setLoading(false);
     } catch (error) {
@@ -84,9 +87,19 @@ function Upload() {
       Alert.alert('Error', 'An error occurred while updating Image');
     }
   };
+  const toggleCheckbox = id => {
+    const updatedSelectedImages = [...selectedImages];
+    const index = updatedSelectedImages.indexOf(id);
+    if (index === -1) {
+      updatedSelectedImages.push(id);
+    } else {
+      updatedSelectedImages.splice(index, 1);
+    }
+    setSelectedImages(updatedSelectedImages);
+  };
 
   console.log(uploadedImages, 'images link visible--->');
-
+  console.log(userID, '-----------');
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -122,7 +135,11 @@ function Upload() {
       {/* Display uploaded images */}
       {!loading &&
         uploadedImages.map(image => (
-          <View key={image.id} style={{alignItems: 'center', marginTop: 20}}>
+          <View key={image.id} style={styles.uploadedImageContainer}>
+            <CheckBox
+              value={selectedImages.includes(image.id)}
+              onValueChange={() => toggleCheckbox(image.id)}
+            />
             <Image source={{uri: image.uri}} style={styles.selectedImage} />
             <TouchableOpacity onPress={() => removeImageHandler(image.id)}>
               <Text style={{color: 'red', marginTop: 5}}>Remove</Text>
@@ -143,6 +160,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 30,
     borderRadius: 5,
+    backgroundColor: colors.white,
   },
   imagePickerButton: {
     borderWidth: 1,
