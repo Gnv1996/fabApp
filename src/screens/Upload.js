@@ -7,41 +7,16 @@ import {
   Image,
   Alert,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import api from '../utils/api';
 import colors from '../styles/colors';
 import {AuthContext} from '../contexts/AuthContext';
-import {CheckBox} from 'react-native-elements';
 
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageshow, setImageshow] = useState(null);
-  const [uploadTime, setUploadTime] = useState(null);
-  const [uploadedImages, setUploadedImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedImages, setSelectedImages] = useState([]);
   const {fabriID} = useContext(AuthContext);
-
-  useEffect(() => {
-    fetchUploadedImages();
-  }, []);
-
-  const fetchUploadedImages = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get(`/requirement/get/${fabriID}`);
-      const apiResponse = response.data.userRequirement;
-      console.log(fabriID);
-      console.log(apiResponse.acceptedBy, '--go india--data');
-      setUploadedImages(apiResponse.acceptedBy.progress);
-      setLoading(false);
-    } catch (error) {
-      console.log('Error fetching uploaded images:', error);
-      setLoading(false);
-    }
-  };
 
   const uploadImageHandler = async () => {
     try {
@@ -51,8 +26,7 @@ function Upload() {
       console.log('Picked document:', doc);
       setSelectedImage(doc[0]);
       setImageshow(doc[0].uri);
-      console.log(doc[0], '---data---');
-      setUploadTime();
+      // console.log(doc[0], '---data---');
     } catch (error) {
       console.error('Error picking document:', error);
     }
@@ -62,8 +36,6 @@ function Upload() {
     try {
       const formData = new FormData();
       formData.append('progress', selectedImage);
-      console.log(formData, '---data Showing');
-      console.log(selectedImage, 'uploading image');
 
       const response = await api.put(
         `/requirement/status/${fabriID}`,
@@ -84,18 +56,6 @@ function Upload() {
       Alert.alert('Error', 'An error occurred while updating Image');
     }
   };
-  const toggleCheckbox = id => {
-    const updatedSelectedImages = [...selectedImages];
-    const index = updatedSelectedImages.indexOf(id);
-    if (index === -1) {
-      updatedSelectedImages.push(id);
-    } else {
-      updatedSelectedImages.splice(index, 1);
-    }
-    setSelectedImages(updatedSelectedImages);
-  };
-
-  console.log(uploadedImages, 'images link visible--->');
 
   return (
     <ScrollView>
@@ -109,9 +69,6 @@ function Upload() {
         {imageshow && (
           <View style={{alignItems: 'center', marginTop: 20}}>
             <Image source={{uri: imageshow}} style={styles.selectedImage} />
-            <Text style={{color: colors.black, marginBottom: 10}}>
-              Uploaded Time: {uploadTime}
-            </Text>
           </View>
         )}
         <TouchableOpacity
@@ -120,32 +77,6 @@ function Upload() {
           <Text style={{color: colors.white}}>Submit</Text>
         </TouchableOpacity>
       </View>
-      {/* Loader */}
-      {loading && (
-        <ActivityIndicator
-          size="large"
-          color={colors.blue}
-          style={{marginTop: 20}}
-        />
-      )}
-
-      {/* Display uploaded images */}
-      {!loading &&
-        uploadedImages.map(image => (
-          <View key={image.id} style={styles.uploadedImageContainer}>
-            <CheckBox
-              value={selectedImages.includes(image.id)}
-              onValueChange={() => toggleCheckbox(image.id)}
-            />
-            <Image source={{uri: image.uri}} style={styles.selectedImage} />
-            <TouchableOpacity onPress={() => removeImageHandler(image.id)}>
-              <Text style={{color: 'red', marginTop: 5}}>Remove</Text>
-            </TouchableOpacity>
-            <Text style={{color: colors.black, marginBottom: 10}}>
-              Uploaded Time: {image.uploadTime}
-            </Text>
-          </View>
-        ))}
     </ScrollView>
   );
 }
