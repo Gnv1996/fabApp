@@ -25,14 +25,14 @@ function Upload() {
 
   useEffect(() => {
     fetchUploadedImages();
-  }, []); // Empty dependency array to run only once when component mounts
+  }, []); 
 
   const fetchUploadedImages = async () => {
     try {
       setLoading(true);
       const response = await api.get(`/requirement/get/${fabriID}`);
       const apiResponse = response.data.userRequirement;
-      // console.log(userID, 'image id required');
+      console.log(fabriID);
       console.log(apiResponse.acceptedBy, '--go india--data');
       setUploadedImages(apiResponse.acceptedBy.progress);
       setLoading(false);
@@ -57,8 +57,6 @@ function Upload() {
     }
   };
 
-  // console.log(userID, '------this is id used in Images');
-
   const submitImagesHandler = async () => {
     try {
       const formData = new FormData();
@@ -66,11 +64,15 @@ function Upload() {
       console.log(formData, '---data Showing');
       console.log(selectedImage, 'uploading image');
 
-      const response = await api.put(`/requirement/status/`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      const response = await api.put(
+        `/requirement/status/${fabriID}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         },
-      });
+      );
 
       console.log(response, 'data');
       Alert.alert('Image Upload Successfully');
@@ -93,7 +95,7 @@ function Upload() {
   };
 
   console.log(uploadedImages, 'images link visible--->');
-  // console.log(userID, '-----------');
+
   return (
     <ScrollView>
       <View style={styles.container}>

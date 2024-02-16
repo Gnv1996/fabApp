@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,7 @@ import FormData from 'form-data';
 import api from '../utils/api';
 import colors from '../styles/colors';
 import FormInput from '../components/FormInput';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '../contexts/AuthContext';
 
 function AaharUpdate({navigation}) {
   const [loading, setLoading] = useState(false);
@@ -29,27 +29,15 @@ function AaharUpdate({navigation}) {
     timePeriod: '',
     description: '',
   });
-  const [userExpoId, setUserExpoId] = useState(null);
+
   const [expoCreated, setExpoCreated] = useState('');
-
-  useEffect(() => {
-    const getUserExpoId = async () => {
-      try {
-        const storedId = await AsyncStorage.getItem('ExpoId'); // Assuming 'userExpoId' is the key used for storing the ID
-        setUserExpoId(storedId);
-      } catch (error) {
-        console.error('Error retrieving user Expo ID:', error);
-      }
-    };
-
-    getUserExpoId();
-  }, []);
+  const {setExpoID} = useContext(AuthContext);
+  const {expoID} = useContext(AuthContext);
 
   const createExpoHandler = async () => {
     try {
       setLoading(true);
 
-      // Run post API to create expo
       const formData = new FormData();
       formData.append('title', adminData.title);
       formData.append('eventDate', adminData.eventDate);
@@ -73,7 +61,6 @@ function AaharUpdate({navigation}) {
       if (responseData.status) {
         console.log('Expo creation successful');
         Alert.alert('Expo Data Creation successful');
-        setExpoCreated(true); // Set expoCreated to true after successful creation
       }
     } catch (error) {
       console.log('Error creating Expo:', error.response.data);
@@ -92,7 +79,6 @@ function AaharUpdate({navigation}) {
     try {
       setLoading(true);
 
-      // Run post API to create expo
       const formData = new FormData();
       formData.append('title', adminData.title);
       formData.append('eventDate', adminData.eventDate);
@@ -100,23 +86,22 @@ function AaharUpdate({navigation}) {
       formData.append('venue', adminData.venue);
       formData.append('timePeriod', adminData.timePeriod);
       formData.append('description', adminData.description);
-      console.log(userExpoId, '---local id new----');
 
-      const response = await api.put(
-        `/exhibition/update/${userExpoId}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      const response = await api.put(`/exhibition/update/${expoID}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
         },
-      );
+      });
       const responseData = response;
       console.log(response, 'data');
       if (responseData.status) {
-        console.log('Expo update successful');
-        Alert.alert('Expo Data Update successful');
-        await AsyncStorage.removeItem('ExpoId');
+        // console.log('Expo update successful');
+        Alert.alert('Success', 'Expo data updated successfully', [
+          {
+            text: 'OK',
+            onPress: () => fetchDataFromAPI(),
+          },
+        ]);
       }
     } catch (error) {
       console.log('Error updating Expo:');
@@ -192,10 +177,41 @@ function AaharUpdate({navigation}) {
       }
     }
   };
+  const fetchDataFromAPI = async () => {
+    try {
+      const response = await api.get('/exhibition/get');
+      const allExhibitions = response.data.exhibition;
+      console.log(allExhibitions, '----data coming---');
+
+      const filteredExhibition = allExhibitions.find(
+        exhibition => exhibition.title === 'Aahar',
+      );
+
+      if (filteredExhibition) {
+        setAdminData(prev => ({...prev, ...filteredExhibition}));
+        setSelectedImage(filteredExhibition.imageURL);
+        setExpoID(filteredExhibition._id);
+        console.log(filteredExhibition.imageURL, '-------this is');
+        setExpoCreated(true);
+        setLoading(false);
+      } else {
+        console.error('Exhibition not found.');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromAPI();
+  }, []);
 
   return (
     <ScrollView>
-      <Text style={styles.layoutText}>{adminData.title} Expo</Text>
+      <Text style={styles.layoutText}>{adminData.title}</Text>
+
       <View style={styles.component}>
         <FormInput
           textHeader="Event Date"
@@ -207,7 +223,7 @@ function AaharUpdate({navigation}) {
         <FormInput
           textHeader="Venue"
           placeholder="Location"
-          value={adminData.location}
+          value={adminData.venue}
           onChangeText={text => setAdminData({...adminData, venue: text})}
         />
 
@@ -335,10 +351,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  selectedImage: {
+    height: 200,
+    width: 200,
+    borderRadius: 10,
+  },
 });
 
 export default AaharUpdate;
-
-// export default TradeUpdate;
-
-// export default AaharUpdate;

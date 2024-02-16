@@ -44,7 +44,6 @@ function Notification({navigation}) {
   const handleViewClick = id => {
     console.log(`Clicked on notification with id: ${id}`);
     setUsersID(id);
-    // AsyncStorage.setItem('userID', id);
 
     navigation.navigate('Requirement');
   };

@@ -9,6 +9,7 @@ const AuthProvider = ({children}) => {
   const [profileImg, setProfileImg] = useState(null);
   const [UsersID, setUsersID] = useState(null);
   const [fabriID, setfabriID] = useState(null);
+  const [expoID, setExpoID] = useState(null);
 
   useEffect(() => {
     // Check if the token is already saved in local storage
@@ -44,8 +45,7 @@ const AuthProvider = ({children}) => {
     AsyncStorage.removeItem('userEmail');
     AsyncStorage.removeItem('ForgetToken');
     AsyncStorage.removeItem('OtpToken');
-    AsyncStorage.removeItem('ExpoId');
-    AsyncStorage.removeItem('userID')
+    AsyncStorage.removeItem('ExpoId')
 
       .then(() => {
         setUserLoggedIn(false);
@@ -67,6 +67,8 @@ const AuthProvider = ({children}) => {
         setUsersID,
         fabriID,
         setfabriID,
+        expoID,
+        setExpoID,
       }}>
       {children}
     </AuthContext.Provider>
