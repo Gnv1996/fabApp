@@ -12,7 +12,7 @@ import {
 import DocumentPicker from 'react-native-document-picker';
 import api from '../utils/api';
 import colors from '../styles/colors';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '../contexts/AuthContext';
 
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -21,20 +21,18 @@ function Upload() {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
-  const [userID, setUserID] = useState('');
+  const {fabriID} = useContext(AuthContext);
 
   useEffect(() => {
     fetchUploadedImages();
   }, []); // Empty dependency array to run only once when component mounts
 
   const fetchUploadedImages = async () => {
-    const UserID = await AsyncStorage.getItem('userID');
-    setUserID(UserID);
     try {
       setLoading(true);
-      const response = await api.get(`/requirement/get/${userID}`);
+      const response = await api.get(`/requirement/get/${fabriID}`);
       const apiResponse = response.data.userRequirement;
-      console.log(userID, 'image id required');
+      // console.log(userID, 'image id required');
       console.log(apiResponse.acceptedBy, '--go india--data');
       setUploadedImages(apiResponse.acceptedBy.progress);
       setLoading(false);
@@ -59,7 +57,7 @@ function Upload() {
     }
   };
 
-  console.log(userID, '------this is id used in Images');
+  // console.log(userID, '------this is id used in Images');
 
   const submitImagesHandler = async () => {
     try {
@@ -68,15 +66,11 @@ function Upload() {
       console.log(formData, '---data Showing');
       console.log(selectedImage, 'uploading image');
 
-      const response = await api.put(
-        `/requirement/status/${userID}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      const response = await api.put(`/requirement/status/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
         },
-      );
+      });
 
       console.log(response, 'data');
       Alert.alert('Image Upload Successfully');
@@ -99,7 +93,7 @@ function Upload() {
   };
 
   console.log(uploadedImages, 'images link visible--->');
-  console.log(userID, '-----------');
+  // console.log(userID, '-----------');
   return (
     <ScrollView>
       <View style={styles.container}>

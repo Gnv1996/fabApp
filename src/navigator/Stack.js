@@ -21,6 +21,8 @@ import TradeUpdate from '../admin/TradeUpdate';
 import AdminScreen from '../admin/AdminScreen';
 import UpcomingExpo from '../expo/UpcomingExpo';
 import UpcomingExpoUpdate from '../admin/UpcomingExpoUpdate';
+import AcceptedFabrication from '../screens/AcceptedFabrication';
+import Upload from '../screens/Upload';
 
 const Stack = createStackNavigator();
 function Stacks() {
@@ -162,6 +164,20 @@ function Stacks() {
             component={Notification}
             options={{
               title: 'Notification',
+            }}
+          />
+          <Stack.Screen
+            name="Upload"
+            component={Upload}
+            options={{
+              title: 'Upload Image',
+            }}
+          />
+          <Stack.Screen
+            name="Accepted"
+            component={AcceptedFabrication}
+            options={{
+              title: 'Accepted Fabrication',
             }}
           />
         </Stack.Navigator>

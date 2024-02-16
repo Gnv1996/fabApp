@@ -8,6 +8,7 @@ const AuthProvider = ({children}) => {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [profileImg, setProfileImg] = useState(null);
   const [UsersID, setUsersID] = useState(null);
+  const [fabriID, setfabriID] = useState(null);
 
   useEffect(() => {
     // Check if the token is already saved in local storage
@@ -64,6 +65,8 @@ const AuthProvider = ({children}) => {
         setProfileImg,
         UsersID,
         setUsersID,
+        fabriID,
+        setfabriID,
       }}>
       {children}
     </AuthContext.Provider>

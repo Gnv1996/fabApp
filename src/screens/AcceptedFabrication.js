@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useContext} from 'react';
-import api from '../utils/api';
 import {
   View,
   Text,
@@ -10,50 +9,44 @@ import {
 } from 'react-native';
 import colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../utils/api';
 import {AuthContext} from '../contexts/AuthContext';
 
-function Notification({navigation}) {
+function AcceptedFabrication({navigation}) {
   const [notifications, setNotifications] = useState([]);
-  const {setUsersID} = useContext(AuthContext);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const {setfabriID} = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/requirement/get_all');
+        const response = await api.get('requirement/accepted');
         const apiResponse = response.data.userRequirements;
         if (Array.isArray(apiResponse) && apiResponse.length > 0) {
           setNotifications(apiResponse);
-          setLoading(false);
-          // console.log(apiResponse, '---->----fetching data---');
         }
       } catch (error) {
         console.error('Error fetching notifications:', error);
-        setLoading(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    const timeout = setTimeout(() => {
-      fetchData();
-    }, 2000);
-
-    return () => clearTimeout(timeout);
+    fetchData();
   }, []);
 
   const handleViewClick = id => {
     console.log(`Clicked on notification with id: ${id}`);
-    setUsersID(id);
-    // AsyncStorage.setItem('userID', id);
-
-    navigation.navigate('Requirement');
+    setfabriID(id);
+    navigation.navigate('Upload');
   };
 
   return (
     <ScrollView>
-      {loading ? ( // Show loader if loading state is true
+      {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.red} />
+          <Text style={styles.loadingText}>Loading...</Text>
         </View>
       ) : (
         notifications.map(notification => (
@@ -65,7 +58,7 @@ function Notification({navigation}) {
               <Icon name="notifications-circle" size={50} color="#808080" />
             </View>
             <View style={styles.textContainer}>
-              <Text style={styles.titleName}>New Notifications</Text>
+              <Text style={styles.titleName}>Accepted Request</Text>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.titlePostion}>
                   {notification.createdAt}
@@ -112,12 +105,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   loadingText: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    justifyContent: 'center',
+    marginTop: 10,
     color: colors.red,
   },
 });
 
-export default Notification;
+export default AcceptedFabrication;

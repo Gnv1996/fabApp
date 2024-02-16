@@ -25,7 +25,7 @@ api.interceptors.request.use(
       const OtpToken = await AsyncStorage.getItem('OtpToken');
       // Await this call
 
-      // console.log(accessToken, 'Token------->-');
+ 
 
       if (accessToken) {
         // const tokenToUse = ForgetToken ? ForgetToken : accessToken;
@@ -38,8 +38,7 @@ api.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${OtpToken}`;
       }
 
-      // console.log(config.headers, '--->----checking');
-      // console.log(ForgetToken, '------>-----Forgot Token-------');
+
 
       return config;
     } catch (error) {

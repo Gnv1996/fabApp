@@ -11,25 +11,9 @@ import {useNavigation} from '@react-navigation/native';
 
 function FabricationPanel() {
   const navigation = useNavigation();
-  // const autoExpoHandlers = () => {
-  //   navigation.navigate('autoUpdate');
-  // };
-  // const tradeFairHandlers = () => {
-  //   navigation.navigate('tradeUpdate');
-  // };
-  // const aaharExpoHandlers = () => {
-  //   navigation.navigate('aaharUpdate');
-  // };
-  // const plastIndiaHandlers = () => {
-  //   navigation.navigate('plastIndiaUpdate');
-  // };
-  // const shownDataHandler = () => {
-  //   navigation.navigate('allData');
-  // };
-
-  // const UpcomingExpoUpdateHandler = () => {
-  //   navigation.navigate('UpcomingUpdate');
-  // };
+  const acceptedFabricationHandler = () => {
+    navigation.navigate('Accepted');
+  };
   return (
     <ScrollView>
       <Text style={styles.layoutText}>Fabrication Panel</Text>
@@ -49,16 +33,13 @@ function FabricationPanel() {
           <View style={styles.box}>
             <View style={styles.expobox}>
               <View style={styles.boxAlign}>
-                <TouchableOpacity style={styles.btnExpo} onPress={{}}>
-                  <Text style={styles.btnboxText}>Auto Expo</Text>
+                <TouchableOpacity
+                  style={styles.btnExpo}
+                  onPress={acceptedFabricationHandler}>
+                  <Text style={styles.btnboxText}>Accepted Fabrication</Text>
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-          <View>
-            <TouchableOpacity style={styles.layout} onPress={{}}>
-              <Text style={styles.btnboxTexts}>Upload Status</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </View>

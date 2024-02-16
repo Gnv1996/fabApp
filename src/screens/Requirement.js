@@ -13,14 +13,13 @@ import colors from '../styles/colors';
 import {useNavigation} from '@react-navigation/native';
 import api from '../utils/api';
 import {AuthContext} from '../contexts/AuthContext';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Requirement() {
   const [tableData, setTableData] = useState([]);
-  const [apiData, setApiData] = useState(null); // Store API response directly
-  const [loading, setLoading] = useState(true); // State to track loading
+  const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-  // const [userID, setUserID] = useState('');
   const {UsersID} = useContext(AuthContext);
 
   useEffect(() => {
@@ -28,9 +27,6 @@ function Requirement() {
   }, []);
 
   const fetchDataFromApi = async () => {
-    // const UserId = await AsyncStorage.getItem('userID');
-    // setUserID(UserId);
-
     try {
       const response = await api.get(`/requirement/get/${UsersID}`);
       console.log(response, '------------------');
@@ -38,23 +34,26 @@ function Requirement() {
     } catch (error) {
       console.error('Error fetching data from API:', error);
     } finally {
-      setLoading(false); // Set loading to false when API call is complete
+      setLoading(false);
     }
   };
 
   const buttonAcceptHandler = async () => {
+    const accessToken = await AsyncStorage.getItem('userToken');
     try {
-      await api.put(`/requirement/accept/${UsersID}`);
+      const response = await api.put(`/requirement/accept/${UsersID}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response, '---data ---show');
+      if (response.data.success == true) {
+        Alert.alert('You Accepted Fabrication Successfully');
+      }
 
-      Alert.alert('You Accepted Fabrication Successfully');
-      console.log(UsersID, '----v---');
-
-      // Refetch data from API
       fetchDataFromApi();
     } catch (error) {
       console.error('Error accepting requirement:', error);
-      // Show error alert if API call fails
-      console.log(userID, '----v---');
       Alert.alert('Error accepting requirement. Please try again.');
     }
   };

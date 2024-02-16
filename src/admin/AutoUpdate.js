@@ -193,6 +193,32 @@ function AutoUpdate({navigation}) {
     }
   };
 
+  const fetchDataFromAPI = async () => {
+    try {
+      const response = await api.get('/exhibition/get');
+      const allExhibitions = response.data.exhibition;
+      const filteredExhibition = allExhibitions.find(
+        exhibition => exhibition.title === 'AutoExpo',
+      );
+
+      if (filteredExhibition) {
+        setAdminData(...adminData, filteredExhibition);
+        setImageUrl(filteredExhibition.imageURL);
+        setLoading(false);
+      } else {
+        console.error('Exhibition not found.');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataFromAPI();
+  }, []);
+
   return (
     <ScrollView>
       <Text style={styles.layoutText}>{adminData.title}</Text>
