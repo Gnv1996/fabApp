@@ -231,6 +231,16 @@ function MyDrawer() {
         />
       )}
 
+      <Drawer.Screen
+        name="Ratings"
+        component={Rating}
+        options={{
+          drawerLabel: 'Ratings',
+          drawerIcon: ({focused}) => (
+            <Icon name="star-half-outline" size={30} color="#808080" />
+          ),
+        }}
+      />
       {userRole == 0 && (
         <Drawer.Screen
           name="Admin Panel"
@@ -243,17 +253,6 @@ function MyDrawer() {
           }}
         />
       )}
-
-      <Drawer.Screen
-        name="Ratings"
-        component={Rating}
-        options={{
-          drawerLabel: 'Ratings',
-          drawerIcon: ({focused}) => (
-            <Icon name="star-half-outline" size={30} color="#808080" />
-          ),
-        }}
-      />
       {userRole == 2 && (
         <Drawer.Screen
           name="Fabrication Panel"
