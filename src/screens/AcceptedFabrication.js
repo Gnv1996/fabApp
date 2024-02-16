@@ -55,7 +55,7 @@ function AcceptedFabrication({navigation}) {
             onPress={() => handleViewClick(notification._id)}
             style={styles.notificationContainer}>
             <View style={styles.iconContainer}>
-              <Icon name="notifications-circle" size={50} color="#808080" />
+              <Icon name="notifications-circle" size={50} color="white" />
             </View>
             <View style={styles.textContainer}>
               <Text style={styles.titleName}>Accepted Request</Text>
@@ -76,9 +76,11 @@ const styles = StyleSheet.create({
   notificationContainer: {
     flexDirection: 'row',
     padding: 10,
-    borderBottomColor: colors.gray,
-    borderBottomWidth: 1,
-    backgroundColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.gray,
+    backgroundColor: colors.orange,
+    borderRadius: 10,
+    margin: 20,
   },
   iconContainer: {
     marginTop: 20,
@@ -88,13 +90,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   titleName: {
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: 'bold',
     color: colors.black,
   },
   titlePostion: {
     fontSize: 15,
-    color: colors.gray,
+    color: colors.white,
     marginTop: 2,
     marginRight: 40,
   },

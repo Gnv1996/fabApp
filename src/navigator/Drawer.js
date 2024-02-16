@@ -205,16 +205,18 @@ function MyDrawer() {
         }}
       />
 
-      <Drawer.Screen
-        name="Requirement Form"
-        component={UserInfo}
-        options={{
-          drawerLabel: 'Requirement Form',
-          drawerIcon: ({focused}) => (
-            <Icon name="eye" size={30} color="#808080" />
-          ),
-        }}
-      />
+      {userRole == 1 && (
+        <Drawer.Screen
+          name="Requirement Form"
+          component={UserInfo}
+          options={{
+            drawerLabel: 'Requirement Form',
+            drawerIcon: ({focused}) => (
+              <Icon name="eye" size={30} color="#808080" />
+            ),
+          }}
+        />
+      )}
 
       {userRole == 2 && (
         <Drawer.Screen
@@ -241,6 +243,17 @@ function MyDrawer() {
           }}
         />
       )}
+
+      <Drawer.Screen
+        name="Ratings"
+        component={Rating}
+        options={{
+          drawerLabel: 'Ratings',
+          drawerIcon: ({focused}) => (
+            <Icon name="star-half-outline" size={30} color="#808080" />
+          ),
+        }}
+      />
       {userRole == 2 && (
         <Drawer.Screen
           name="Fabrication Panel"
@@ -254,17 +267,6 @@ function MyDrawer() {
         />
       )}
 
-      <Drawer.Screen
-        name="Ratings"
-        component={Rating}
-        options={{
-          drawerLabel: 'Ratings',
-          drawerIcon: ({focused}) => (
-            <Icon name="star-half-outline" size={30} color="#808080" />
-          ),
-        }}
-      />
-
       {userRole == 1 && (
         <Drawer.Screen
           name="Status"
@@ -272,7 +274,11 @@ function MyDrawer() {
           options={{
             drawerLabel: 'Status',
             drawerIcon: ({focused}) => (
-              <Icon name="person-circle-outline" size={30} color="#808080" />
+              <Icon
+                name="checkmark-done-circle-outline"
+                size={30}
+                color="#808080"
+              />
             ),
           }}
         />

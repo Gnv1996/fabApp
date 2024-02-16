@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  Alert,
 } from 'react-native';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -38,35 +39,35 @@ function Rating() {
   };
 
   const postRatingData = () => {
-    const apiUrl = 'https://example.com/api/rating'; // Replace with your API endpoint
+    Alert.alert('Thank You For Your Feedback');
+    // const apiUrl = 'https://example.com/api/rating';
+    // const postData = {
+    //   rating: defaultRating,
+    //   feedback: feedback,
+    // };
 
-    // Prepare data to be sent in the request body
-    const postData = {
-      rating: defaultRating,
-      feedback: feedback,
-    };
-
-    // Send a POST request to the API
-    axios
-      .post(apiUrl, postData)
-      .then(response => {
-        // Handle the success response
-        console.log('API Response:', response.data);
-        // You can add further actions here if needed
-      })
-      .catch(error => {
-        // Handle errors
-        console.error('API Error:', error);
-        // You can add error handling logic here
-      });
+    // axios
+    //   .post(apiUrl, postData)
+    //   .then(response => {
+    //     // Handle the success response
+    //     console.log('API Response:', response.data);
+    //     // You can add further actions here if needed
+    //   })
+    //   .catch(error => {
+    //     // Handle errors
+    //     console.error('API Error:', error);
+    //     // You can add error handling logic here
+    //   });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.textStyle}>Please Rate Us</Text>
+
       <CustomRatingBar />
 
-      <View style={{margin: 20}}>
+      <View style={{marginTop: 30}}>
+        <Text style={styles.textComment}>Comment</Text>
         <TextInput
           style={styles.input}
           type="text"
@@ -111,6 +112,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     marginTop: 20,
     color: colors.black,
+    fontWeight: 'bold',
   },
   customBarRatingStyle: {
     justifyContent: 'center',
@@ -138,6 +140,11 @@ const styles = StyleSheet.create({
     borderColor: colors.gray,
     borderRadius: 7,
     padding: 10,
+  },
+  textComment: {
+    color: colors.black,
+    fontSize: 20,
+    marginBottom: 10,
   },
 });
 
