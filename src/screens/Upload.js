@@ -13,6 +13,7 @@ import DocumentPicker from 'react-native-document-picker';
 import api from '../utils/api';
 import colors from '../styles/colors';
 import {AuthContext} from '../contexts/AuthContext';
+import {CheckBox} from 'react-native-elements';
 
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -25,7 +26,7 @@ function Upload() {
 
   useEffect(() => {
     fetchUploadedImages();
-  }, []); 
+  }, []);
 
   const fetchUploadedImages = async () => {
     try {

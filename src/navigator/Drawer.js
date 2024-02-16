@@ -14,7 +14,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Notification from '../screens/Notification';
 import Rating from '../screens/Rating';
-import Upload from '../screens/Upload';
 import Response from '../screens/Response';
 import Admin from '../admin/Admin';
 import Status from '../screens/Status';
@@ -217,29 +216,43 @@ function MyDrawer() {
         }}
       />
 
-      <Drawer.Screen
-        name="Notifications"
-        component={Notification}
-        options={{
-          drawerLabel: 'Notifications',
-          drawerIcon: ({focused}) => (
-            <Icon name="notifications" size={30} color="#808080" />
-          ),
-        }}
-      />
+      {userRole == 2 && (
+        <Drawer.Screen
+          name="Notifications"
+          component={Notification}
+          options={{
+            drawerLabel: 'Notifications',
+            drawerIcon: ({focused}) => (
+              <Icon name="notifications" size={30} color="#808080" />
+            ),
+          }}
+        />
+      )}
 
-      {/* {userRole == 2 && ( */}
-      <Drawer.Screen
-        name="Upload Design"
-        component={Upload}
-        options={{
-          drawerLabel: 'Upload Design',
-          drawerIcon: ({focused}) => (
-            <Icon name="cloud-upload-outline" size={30} color="#808080" />
-          ),
-        }}
-      />
-      {/* )} */}
+      {userRole == 0 && (
+        <Drawer.Screen
+          name="Admin Panel"
+          component={Admin}
+          options={{
+            drawerLabel: 'Admin Panel',
+            drawerIcon: ({focused}) => (
+              <Icon name="person-circle-outline" size={30} color="#808080" />
+            ),
+          }}
+        />
+      )}
+      {userRole == 2 && (
+        <Drawer.Screen
+          name="Fabrication Panel"
+          component={FabricationPanel}
+          options={{
+            drawerLabel: 'Fabrication Panel',
+            drawerIcon: ({focused}) => (
+              <Icon name="person-circle-outline" size={30} color="#808080" />
+            ),
+          }}
+        />
+      )}
 
       <Drawer.Screen
         name="Ratings"
@@ -251,37 +264,19 @@ function MyDrawer() {
           ),
         }}
       />
-      <Drawer.Screen
-        name="Admin Panel"
-        component={Admin}
-        options={{
-          drawerLabel: 'Admin Panel',
-          drawerIcon: ({focused}) => (
-            <Icon name="person-circle-outline" size={30} color="#808080" />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="Status"
-        component={Status}
-        options={{
-          drawerLabel: 'Work Status',
-          drawerIcon: ({focused}) => (
-            <Icon name="person-circle-outline" size={30} color="#808080" />
-          ),
-        }}
-      />
 
-      <Drawer.Screen
-        name="Fabrication Panel"
-        component={FabricationPanel}
-        options={{
-          drawerLabel: 'Fabrication Panel',
-          drawerIcon: ({focused}) => (
-            <Icon name="person-circle-outline" size={30} color="#808080" />
-          ),
-        }}
-      />
+      {userRole == 1 && (
+        <Drawer.Screen
+          name="Status"
+          component={Status}
+          options={{
+            drawerLabel: 'Status',
+            drawerIcon: ({focused}) => (
+              <Icon name="person-circle-outline" size={30} color="#808080" />
+            ),
+          }}
+        />
+      )}
     </Drawer.Navigator>
   );
 }
