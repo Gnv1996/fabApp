@@ -9,95 +9,66 @@ import {
   ScrollView,
 } from 'react-native';
 import api from '../utils/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../styles/colors';
 
 function Status() {
   const [images, setImages] = useState([]);
-  const [selectedImages, setSelectedImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const uploadTime = new Date().toLocaleString();
 
   useEffect(() => {
-    fetchgetAllApi;
+    fetchImages();
   }, []);
 
-  const fetchgetAllApi = async () => {
+  const fetchImages = async () => {
+    const accessToken = await AsyncStorage.getItem('userToken');
     try {
       setLoading(true);
-      const response = await api.get('/requirement/accepted');
-      const ResponseData = response.data.userRequirements;
-      console.log(ResponseData, 'api response-----for images---');
+      const response = await api.get('/requirement/accepted', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const responseData = response.data.userRequirements;
+
+      // Extracting progress links from the responseData
+      const progressLinks = responseData
+        .map(requirement => requirement.acceptedBy.progress)
+        .flat();
+
+      console.log(progressLinks, 'gautam lunvh karne chalo');
+      setImages(progressLinks);
       setLoading(false);
     } catch (error) {
-      console.error('Api Response coming for Accepted--:', error);
+      console.error('Error fetching images:', error);
       setLoading(false);
     }
-  };
-
-  const toggleImageSelection = imageId => {
-    if (selectedImages.includes(imageId)) {
-      setSelectedImages(selectedImages.filter(id => id !== imageId));
-    } else {
-      setSelectedImages([...selectedImages, imageId]);
-    }
-  };
-
-  // Function to group images by upload time
-  const groupImagesByUploadTime = () => {
-    const groupedImages = {};
-    images.forEach(image => {
-      const uploadTime = image.uploadTime;
-      if (!groupedImages[uploadTime]) {
-        groupedImages[uploadTime] = [];
-      }
-      groupedImages[uploadTime].push(image);
-    });
-    return groupedImages;
-  };
-
-  const renderImagesInSection = () => {
-    const groupedImages = groupImagesByUploadTime();
-    return Object.keys(groupedImages).map((uploadTime, index) => (
-      <View key={index}>
-        <Text style={styles.sectionTitle}>Upload Time: {uploadTime}</Text>
-        <View style={styles.sectionContainer}>
-          {groupedImages[uploadTime].map(image => (
-            <TouchableOpacity
-              key={image.id}
-              onPress={() => toggleImageSelection(image.id)}>
-              <View style={styles.imageContainer}>
-                <Image source={{uri: image.url}} style={styles.image} />
-                <View style={styles.checkboxContainer}>
-                  <TouchableOpacity
-                    onPress={() => toggleImageSelection(image.id)}>
-                    <View
-                      style={[
-                        styles.checkbox,
-                        selectedImages.includes(image.id) &&
-                          styles.checkedCheckbox,
-                      ]}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.uploadTime}>
-                  Uploaded Time: {image.uploadTime}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    ));
   };
 
   return (
     <ScrollView>
       <Text style={styles.layoutText}>Work Status</Text>
       <View style={styles.container}>
-        {loading ? (
-          <ActivityIndicator size="large" color="blue" style={styles.loader} />
-        ) : (
-          renderImagesInSection()
-        )}
+        <View style={styles.row}>
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color="blue"
+              style={styles.loader}
+            />
+          ) : (
+            images.map((imageUrl, index) => (
+              <Image
+                key={index}
+                source={{uri: imageUrl}}
+                style={styles.image}
+              />
+            ))
+          )}
+        </View>
+
+        <Text style={styles.uploadTime}>Uploaded Time: {uploadTime}</Text>
       </View>
     </ScrollView>
   );
@@ -106,46 +77,26 @@ function Status() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginLeft: 10,
-  },
-  sectionContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  imageContainer: {
-    margin: 10,
-    alignItems: 'center',
-  },
-  image: {
-    width: 100,
-    height: 100,
-    resizeMode: 'cover',
-    borderRadius: 5,
+    width: 400,
   },
   uploadTime: {
-    marginTop: 5,
-    textAlign: 'center',
+    color: colors.black,
   },
-  checkboxContainer: {
-    position: 'absolute',
-    top: 5,
-    right: 5,
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderColor: 'black',
-    borderWidth: 1,
-  },
-  checkedCheckbox: {
-    backgroundColor: 'blue',
+  image: {
+    width: 150,
+    height: 150,
+    resizeMode: 'cover',
+    borderRadius: 5,
+    margin: 5,
   },
   loader: {
     position: 'absolute',

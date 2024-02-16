@@ -44,6 +44,7 @@ function LoginScreen({navigation}) {
         await AsyncStorage.setItem('userToken', accessToken);
         await AsyncStorage.setItem('userEmail', user.email);
         await AsyncStorage.setItem('userFullName', user.fullname);
+
         handleLogin(accessToken);
       } else {
         setError('An error occurred during login.');
