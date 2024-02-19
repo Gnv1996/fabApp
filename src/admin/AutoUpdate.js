@@ -10,6 +10,7 @@ import {
   Image,
   Platform,
   PermissionsAndroid,
+  Button,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import FormData from 'form-data';
@@ -17,6 +18,7 @@ import api from '../utils/api';
 import colors from '../styles/colors';
 import FormInput from '../components/FormInput';
 import {AuthContext} from '../contexts/AuthContext';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 function AutoUpdate({navigation}) {
   const [loading, setLoading] = useState(false);
@@ -33,6 +35,10 @@ function AutoUpdate({navigation}) {
   const [expoCreated, setExpoCreated] = useState('');
   const {setExpoID} = useContext(AuthContext);
   const {expoID} = useContext(AuthContext);
+  const [isStartTimePickerVisible, setStartTimePickerVisible] = useState(false);
+  const [isEndTimePickerVisible, setEndTimePickerVisible] = useState(false);
+  const [isSelectingStartTime, setIsSelectingStartTime] = useState(true);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const createExpoHandler = async () => {
     try {
@@ -67,7 +73,7 @@ function AutoUpdate({navigation}) {
 
       Alert.alert(
         'Error',
-        'An error occurred while creating Expo',
+        'An error occurred while creating Expo ',
         error.response.data.message,
       );
     } finally {
@@ -102,13 +108,9 @@ function AutoUpdate({navigation}) {
             onPress: () => fetchDataFromAPI(), // Reload profile data after update
           },
         ]);
-
-        await AsyncStorage.removeItem('ExpoId');
       }
     } catch (error) {
       console.log('Error updating Expo:');
-
-      Alert.alert('Error', 'An error occurred while updating Expo');
     } finally {
       setLoading(false);
     }
@@ -128,6 +130,7 @@ function AutoUpdate({navigation}) {
     } catch (error) {
       console.error('Error picking document:', error);
     }
+    requestGalleryPermission();
   };
 
   const requestGalleryPermission = async () => {
@@ -154,31 +157,6 @@ function AutoUpdate({navigation}) {
     }
   };
 
-  const requestCameraPermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.CAMERA,
-          {
-            title: 'Cool Photo App Camera Permission',
-            message:
-              'Cool Photo App needs access to your camera ' +
-              'so you can take awesome pictures.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          },
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Camera permission granted');
-        } else {
-          console.log('Camera permission denied');
-        }
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  };
   const fetchDataFromAPI = async () => {
     try {
       const response = await api.get('/exhibition/get');
@@ -210,16 +188,85 @@ function AutoUpdate({navigation}) {
     fetchDataFromAPI();
   }, []);
 
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+    hideDatePicker();
+    // Convert date to string with only the date part
+    const dateString = date.toISOString().split('T')[0];
+    setAdminData({...adminData, eventDate: dateString});
+  };
+
+  const showTimePicker = () => {
+    if (isSelectingStartTime) {
+      setStartTimePickerVisible(true);
+    } else {
+      setEndTimePickerVisible(true);
+    }
+  };
+
+  const hideTimePicker = () => {
+    if (isSelectingStartTime) {
+      setStartTimePickerVisible(false);
+    } else {
+      setEndTimePickerVisible(false);
+    }
+  };
+
+  const handleTimeConfirm = time => {
+    hideTimePicker();
+    const formattedTime = formatTime(time);
+    if (isSelectingStartTime) {
+      setAdminData(prevState => ({
+        ...prevState,
+        timePeriod: `${formattedTime} - ${
+          prevState.timePeriod.split(' - ')[1]
+        }`,
+      }));
+    } else {
+      setAdminData(prevState => ({
+        ...prevState,
+        timePeriod: `${
+          prevState.timePeriod.split(' - ')[0]
+        } - ${formattedTime}`,
+      }));
+    }
+    setIsSelectingStartTime(!isSelectingStartTime); // Toggle flag after selecting time
+  };
+
+  const formatTime = time => {
+    const hours = time.getHours();
+    const minutes = time.getMinutes();
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    return `${formattedHours}:${formattedMinutes} ${ampm}`;
+  };
   return (
     <ScrollView>
       <Text style={styles.layoutText}>{adminData.title}</Text>
 
       <View style={styles.component}>
-        <FormInput
-          textHeader="Event Date"
-          placeholder="DD/MM/YY"
-          value={adminData.eventDate}
-          onChangeText={text => setAdminData({...adminData, eventDate: text})}
+        <Text style={styles.headingDate}>Select Date</Text>
+        <TouchableOpacity
+          onPress={showDatePicker}
+          style={styles.imagePickerButtons}>
+          <Text>
+            {adminData?.eventDate ? adminData?.eventDate : 'Select Date'}
+          </Text>
+        </TouchableOpacity>
+
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
         />
 
         <FormInput
@@ -228,14 +275,25 @@ function AutoUpdate({navigation}) {
           value={adminData.venue}
           onChangeText={text => setAdminData({...adminData, venue: text})}
         />
+        <Text style={styles.headingDate}>Select Event Time</Text>
+        <TouchableOpacity
+          onPress={showTimePicker}
+          style={styles.imagePickerButtons}>
+          <Text>
+            {adminData?.timePeriod
+              ? adminData?.timePeriod
+              : 'Select Event Time'}
+          </Text>
+        </TouchableOpacity>
+        <View>
+          <DateTimePickerModal
+            isVisible={isStartTimePickerVisible || isEndTimePickerVisible}
+            mode="time"
+            onConfirm={handleTimeConfirm}
+            onCancel={hideTimePicker}
+          />
+        </View>
 
-        <FormInput
-          textHeader="Time of Event"
-          type="text"
-          placeholder="Like 5:30am- 6:00 pm"
-          value={adminData.timePeriod}
-          onChangeText={text => setAdminData({...adminData, timePeriod: text})}
-        />
         <Text style={styles.label}>Description</Text>
         <TextInput
           style={styles.input}
@@ -357,6 +415,19 @@ const styles = StyleSheet.create({
     height: 200,
     width: 200,
     borderRadius: 10,
+  },
+  imagePickerButtons: {
+    borderWidth: 2,
+    borderColor: colors.gray,
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 5,
+    marginTop: 10,
+  },
+  headingDate: {
+    fontSize: 16,
+    color: colors.black,
   },
 });
 

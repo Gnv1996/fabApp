@@ -146,7 +146,7 @@ function UserInfo() {
       budget,
       comment,
     };
-    console.log(dataToSend, '------------data filled--');
+    // console.log(dataToSend, '------------data filled--');
 
     try {
       const response = await api.post('/requirement/set', dataToSend);
