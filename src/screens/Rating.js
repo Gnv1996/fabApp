@@ -9,7 +9,6 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../styles/colors';
 import fullStar from '../assests/fullStar.png';
@@ -40,24 +39,7 @@ function Rating() {
 
   const postRatingData = () => {
     Alert.alert('Thank You For Your Feedback');
-    // const apiUrl = 'https://example.com/api/rating';
-    // const postData = {
-    //   rating: defaultRating,
-    //   feedback: feedback,
-    // };
-
-    // axios
-    //   .post(apiUrl, postData)
-    //   .then(response => {
-    //     // Handle the success response
-    //     console.log('API Response:', response.data);
-    //     // You can add further actions here if needed
-    //   })
-    //   .catch(error => {
-    //     // Handle errors
-    //     console.error('API Error:', error);
-    //     // You can add error handling logic here
-    //   });
+    setFeedback('');
   };
 
   return (
@@ -102,10 +84,11 @@ const styles = StyleSheet.create({
   container: {
     borderColor: colors.gray,
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 15,
     height: 380,
     margin: 30,
+    backgroundColor: colors.white,
   },
   textStyle: {
     textAlign: 'center',
@@ -140,6 +123,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gray,
     borderRadius: 7,
     padding: 10,
+    color: colors.gray,
   },
   textComment: {
     color: colors.black,

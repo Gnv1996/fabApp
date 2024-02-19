@@ -18,7 +18,8 @@ import AaharUpdate from '../admin/AaharUpdate';
 import PlastUpdate from '../admin/PlastUpdate';
 import AutoUpdate from '../admin/AutoUpdate';
 import TradeUpdate from '../admin/TradeUpdate';
-import AdminScreen from '../admin/AdminScreen';
+import ExhibitorList from '../admin/ExhibitorList';
+import FabricationList from '../admin/FabicatorList';
 import UpcomingExpo from '../expo/UpcomingExpo';
 import UpcomingExpoUpdate from '../admin/UpcomingExpoUpdate';
 import AcceptedFabrication from '../screens/AcceptedFabrication';
@@ -146,12 +147,20 @@ function Stacks() {
             }}
           />
           <Stack.Screen
-            name="allData"
-            component={AdminScreen}
+            name="ExhibitorList"
+            component={ExhibitorList}
             options={{
-              title: 'Data Update',
+              title: 'Exhibitor List',
             }}
           />
+          <Stack.Screen
+            name="FabricatorList"
+            component={FabricationList}
+            options={{
+              title: 'Fabricator List',
+            }}
+          />
+
           <Stack.Screen
             name="UpcomingExpo"
             component={UpcomingExpo}

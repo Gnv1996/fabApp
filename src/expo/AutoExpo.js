@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import api from '../utils/api';
 import {useNavigation} from '@react-navigation/native';
@@ -57,7 +58,7 @@ function AutoExpo() {
     navigation.navigate('ReqForm');
   };
   const buttonRejectHandler = () => {
-    navigation.navigate('home');
+    Alert.alert('Please Explore App');
   };
 
   const {eventDate, venue, timePeriod, description} = eventData;
@@ -130,9 +131,11 @@ function AutoExpo() {
 const styles = StyleSheet.create({
   container: {
     margin: 20,
+    backgroundColor: colors.white,
+    padding: 10,
   },
   eventImage: {
-    width: 340,
+    width: 330,
     height: 200,
     resizeMode: 'cover',
     marginBottom: 20,
@@ -150,6 +153,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 27,
     margin: 20,
+    backgroundColor: colors.white,
   },
   component: {
     marginVertical: 20,

@@ -10,7 +10,6 @@ import {
   Image,
   Platform,
   PermissionsAndroid,
-  Button,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import FormData from 'form-data';

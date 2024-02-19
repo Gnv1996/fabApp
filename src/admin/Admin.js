@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import colors from '../styles/colors';
 import {useNavigation} from '@react-navigation/native';
-import UpcomingExpo from '../expo/UpcomingExpo';
 
 function Admin() {
   const navigation = useNavigation();
@@ -24,8 +23,11 @@ function Admin() {
   const plastIndiaHandlers = () => {
     navigation.navigate('plastIndiaUpdate');
   };
-  const shownDataHandler = () => {
-    navigation.navigate('allData');
+  const shownExhibitorHandler = () => {
+    navigation.navigate('ExhibitorList');
+  };
+  const shownFabricatorHandler = () => {
+    navigation.navigate('FabricatorList');
   };
 
   const UpcomingExpoUpdateHandler = () => {
@@ -35,7 +37,11 @@ function Admin() {
     <ScrollView>
       <Text style={styles.layoutText}>Admin Panel</Text>
       <View style={styles.container}>
-        <View style={{backgroundColor: colors.white}}>
+        <View
+          style={{
+            backgroundColor: colors.white,
+            borderRadius: 10,
+          }}>
           <Text
             style={{
               fontWeight: 'bold',
@@ -82,9 +88,16 @@ function Admin() {
               </View>
             </View>
           </View>
-          <View>
-            <TouchableOpacity style={styles.layout} onPress={shownDataHandler}>
-              <Text style={styles.btnboxTexts}>Expo Data</Text>
+          <View style={styles.boxAlign}>
+            <TouchableOpacity
+              style={styles.layout}
+              onPress={shownExhibitorHandler}>
+              <Text style={styles.btnboxTexts}>Exhibitor List</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.layout}
+              onPress={shownFabricatorHandler}>
+              <Text style={styles.btnboxTexts}>Fabricator List</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -140,6 +153,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 27,
+    backgroundColor: colors.white,
   },
   layout: {
     backgroundColor: colors.orange,
