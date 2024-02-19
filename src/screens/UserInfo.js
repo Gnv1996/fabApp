@@ -29,10 +29,6 @@ function UserInfo() {
   );
   const [furniture, setFurniture] = useState('Select your Furniture');
   const [lighting, setLighting] = useState('Select your Lighting');
-  const [vinylSelected, setVinylSelected] = useState(false);
-  const [backlitSelected, setBacklitSelected] = useState(false);
-  const [vinylSunboardSelected, setVinylSunboardSelected] = useState(false);
-  const [flexSelected, setFlexSelected] = useState(false);
   const [selectedItem, setSelectedItem] = useState('Select Exhibitions');
   const [isFormVisible, setIsFormVisible] = useState(true);
   const [budget, setBudget] = useState('Select Your Budget ');
@@ -42,6 +38,7 @@ function UserInfo() {
   const [isFurnitureChecked, setIsFurnitureClicked] = useState(false);
   const [isLightingChecked, setIsLightingClicked] = useState(false);
   const [comment, SetComment] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const Exhibitor = [
     {label: 'Auto Expo', value: 'item1'},
@@ -145,15 +142,11 @@ function UserInfo() {
       WoodenFlooring,
       furniture,
       lighting,
-      vinylSelected,
-      backlitSelected,
-      vinylSunboardSelected,
-      flexSelected,
-      selectedItem,
+      branding: selectedItems.length > 0 ? selectedItems[0] : '',
       budget,
       comment,
     };
-    // console.log(dataToSend, '------------data filled--');
+    console.log(dataToSend, '------------data filled--');
 
     try {
       const response = await api.post('/requirement/set', dataToSend);
@@ -170,6 +163,13 @@ function UserInfo() {
     }
   };
 
+  const handleCheckboxChange = (itemName, isChecked) => {
+    if (isChecked) {
+      setSelectedItems([itemName]);
+    } else {
+      setSelectedItems([]);
+    }
+  };
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -286,7 +286,7 @@ function UserInfo() {
                 {colorVisible ? (
                   <ColorPicker
                     hideSliders
-                    onColorSelected={colorSelectedHandler}
+                    onColorSelected={color => colorSelectedHandler(color)}
                     style={{height: 100, width: 100}}
                   />
                 ) : null}
@@ -312,8 +312,13 @@ function UserInfo() {
               <View style={styles.checkboxContainer}>
                 <CheckBox
                   title="Vinyl"
-                  checked={vinylSelected}
-                  onPress={() => setVinylSelected(!vinylSelected)}
+                  checked={selectedItems.includes('Vinyl')}
+                  onPress={() =>
+                    handleCheckboxChange(
+                      'Vinyl',
+                      !selectedItems.includes('Vinyl'),
+                    )
+                  }
                   containerStyle={styles.checkbox}
                 />
               </View>
@@ -321,8 +326,13 @@ function UserInfo() {
               <View style={styles.checkboxContainer}>
                 <CheckBox
                   title="Backlit Letters"
-                  checked={backlitSelected}
-                  onPress={() => setBacklitSelected(!backlitSelected)}
+                  checked={selectedItems.includes('Backlit Letters')}
+                  onPress={() =>
+                    handleCheckboxChange(
+                      'Backlit Letters',
+                      !selectedItems.includes('Backlit Letters'),
+                    )
+                  }
                   containerStyle={styles.checkbox}
                 />
               </View>
@@ -331,9 +341,12 @@ function UserInfo() {
               <View style={styles.checkboxContainer}>
                 <CheckBox
                   title="Non-Backlit Letters"
-                  checked={vinylSunboardSelected}
+                  checked={selectedItems.includes('Non-Backlit Letters')}
                   onPress={() =>
-                    setVinylSunboardSelected(!vinylSunboardSelected)
+                    handleCheckboxChange(
+                      'Non-Backlit Letters',
+                      !selectedItems.includes('Non-Backlit Letters'),
+                    )
                   }
                   containerStyle={styles.checkbox}
                 />
@@ -342,8 +355,13 @@ function UserInfo() {
               <View style={styles.checkboxContainer}>
                 <CheckBox
                   title="Flex / Fabric"
-                  checked={flexSelected}
-                  onPress={() => setFlexSelected(!flexSelected)}
+                  checked={selectedItems.includes('Flex / Fabric')}
+                  onPress={() =>
+                    handleCheckboxChange(
+                      'Flex / Fabric',
+                      !selectedItems.includes('Flex / Fabric'),
+                    )
+                  }
                   containerStyle={styles.checkbox}
                 />
               </View>
