@@ -10,6 +10,16 @@ const AuthProvider = ({children}) => {
   const [UsersID, setUsersID] = useState(null);
   const [fabriID, setfabriID] = useState(null);
   const [expoID, setExpoID] = useState(null);
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  const incrementNotificationCount = count => {
+    setNotificationCount(prevCount => prevCount + count);
+  };
+
+  // Function to clear notification count
+  const clearNotificationCount = () => {
+    setNotificationCount(0);
+  };
 
   useEffect(() => {
     // Check if the token is already saved in local storage
@@ -69,6 +79,9 @@ const AuthProvider = ({children}) => {
         setfabriID,
         expoID,
         setExpoID,
+        notificationCount,
+        incrementNotificationCount,
+        clearNotificationCount,
       }}>
       {children}
     </AuthContext.Provider>

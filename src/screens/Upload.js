@@ -52,8 +52,6 @@ function Upload() {
       setImageshow('');
     } catch (error) {
       console.log('Error in Upload Image');
-
-      Alert.alert('Error', 'An error occurred while updating Image');
     }
   };
 

@@ -17,6 +17,7 @@ function Notification({navigation}) {
   const [notifications, setNotifications] = useState([]);
   const {setUsersID} = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
+  const {incrementNotificationCount} = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +27,7 @@ function Notification({navigation}) {
         if (Array.isArray(apiResponse) && apiResponse.length > 0) {
           setNotifications(apiResponse);
           setLoading(false);
+          incrementNotificationCount(apiResponse.length);
           // console.log(apiResponse, '---->----fetching data---');
         }
       } catch (error) {
@@ -39,7 +41,7 @@ function Notification({navigation}) {
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, [incrementNotificationCount]);
 
   const handleViewClick = id => {
     console.log(`Clicked on notification with id: ${id}`);

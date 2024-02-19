@@ -18,7 +18,13 @@ function FabricationPanel() {
     <ScrollView>
       <Text style={styles.layoutText}>Fabrication Panel</Text>
       <View style={styles.container}>
-        <View style={{backgroundColor: colors.white}}>
+        <View
+          style={{
+            backgroundColor: colors.white,
+            padding: 10,
+            borderRadius: 10,
+            paddingBottom: 40,
+          }}>
           <Text
             style={{
               fontWeight: 'bold',
@@ -94,6 +100,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 27,
+    backgroundColor: colors.white,
   },
   layout: {
     backgroundColor: colors.orange,
