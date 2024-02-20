@@ -64,8 +64,8 @@ const SignupScreen = ({navigation}) => {
         const {token} = response.data;
         console.log(response.data, 'otpToken-----------');
         AsyncStorage.setItem('OtpToken', token);
-        setModalVisible(true);
         Alert.alert('Success', response.data.message);
+        setModalVisible(true);
       }
     } catch (error) {
       console.log(error, 'comming-----------');
