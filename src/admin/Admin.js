@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 27,
+    width: 140,
   },
 });
 

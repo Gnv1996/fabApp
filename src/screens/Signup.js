@@ -58,10 +58,9 @@ const SignupScreen = ({navigation}) => {
         confirmPassword,
         role: role.find(r => r.isChecked)?.id || '',
       });
+      console.log(response.data.message, '------');
 
-      if (response.data.success === false) {
-        Alert.alert('Error', response.data.message);
-      } else {
+      if (response.data.success === true) {
         const {token} = response.data;
         console.log(response.data, 'otpToken-----------');
         AsyncStorage.setItem('OtpToken', token);
@@ -69,8 +68,8 @@ const SignupScreen = ({navigation}) => {
         Alert.alert('Success', response.data.message);
       }
     } catch (error) {
-      console.log(error);
-      Alert.alert('Success', response.data.message);
+      console.log(error, 'comming-----------');
+      Alert.alert('Error', error.response.data.message);
     } finally {
       setIsSigningUp(false); // Finish signup process
     }

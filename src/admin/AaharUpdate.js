@@ -256,7 +256,7 @@ function AaharUpdate({navigation}) {
         <TouchableOpacity
           onPress={showDatePicker}
           style={styles.imagePickerButtons}>
-          <Text>
+          <Text style={{color: colors.black}}>
             {adminData?.eventDate ? adminData?.eventDate : 'Select Date'}
           </Text>
         </TouchableOpacity>
@@ -278,7 +278,7 @@ function AaharUpdate({navigation}) {
         <TouchableOpacity
           onPress={showTimePicker}
           style={styles.imagePickerButtons}>
-          <Text>
+          <Text style={{color: colors.black}}>
             {adminData?.timePeriod
               ? adminData?.timePeriod
               : 'Select Event Time'}
@@ -362,6 +362,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gray,
     borderRadius: 7,
     padding: 10,
+    color: colors.gray,
   },
   btn: {
     backgroundColor: colors.orange,

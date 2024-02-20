@@ -64,7 +64,11 @@ const ExhibitorList = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-            <Row data={tableHead} style={styles.head} textStyle={styles.text} />
+            <Row
+              data={tableHead}
+              style={styles.head}
+              textStyle={[styles.text, styles.boldText]}
+            />
             {tableData.map((rowData, index) => (
               <Row
                 key={index}
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#f1f8ff',
   },
-  text: {margin: 6},
+  text: {margin: 6, color: colors.black},
   row: {
     flexDirection: 'row',
     backgroundColor: '#FFF1C1',

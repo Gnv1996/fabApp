@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#f1f8ff',
   },
-  text: {margin: 6},
+  text: {margin: 6, color: colors.black},
   row: {
     flexDirection: 'row',
     backgroundColor: '#FFF1C1',

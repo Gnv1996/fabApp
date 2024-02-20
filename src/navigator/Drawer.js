@@ -182,36 +182,36 @@ function MyDrawer() {
           drawerIcon: ({focused}) => (
             <Icon name="home" size={30} color="#FFA500" />
           ),
-
-          headerRight: () => {
-            return (
-              <TouchableOpacity
-                style={{marginRight: 10}}
-                onPress={() => {
-                  navigation.navigate('Notifications');
-                }}>
-                <Icon name="notifications" size={30} color="#FFA500" />
-                {notificationCount > 0 && (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      backgroundColor: 'red',
-                      borderRadius: 10,
-                      width: 20,
-                      height: 20,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      top: -5,
-                      right: -5,
+          headerRight:
+            userRole === '2'
+              ? () => (
+                  <TouchableOpacity
+                    style={{marginRight: 10}}
+                    onPress={() => {
+                      navigation.navigate('Notifications');
                     }}>
-                    <Text style={{color: 'white', fontSize: 12}}>
-                      +{notificationCount}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            );
-          },
+                    <Icon name="notifications" size={30} color="#FFA500" />
+                    {notificationCount > 0 && (
+                      <View
+                        style={{
+                          position: 'absolute',
+                          backgroundColor: 'red',
+                          borderRadius: 10,
+                          width: 20,
+                          height: 20,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          top: -5,
+                          right: -5,
+                        }}>
+                        <Text style={{color: 'white', fontSize: 12}}>
+                          +{notificationCount}
+                        </Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )
+              : null,
         })}
       />
 

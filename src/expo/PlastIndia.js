@@ -75,14 +75,14 @@ function PlastIndia() {
 
         <View style={styles.component}>
           <Text style={styles.label}>Event Date:-</Text>
-          <Text style={{fontSize: 17}}>{eventDate}</Text>
+          <Text style={styles.textInput}>{eventDate}</Text>
           <Text style={styles.label}>Venue:-</Text>
-          <Text style={{fontSize: 17}}>{venue} </Text>
+          <Text style={styles.textInput}>{venue} </Text>
           {/* Displaying venue here */}
           <Text style={styles.label}>Time of Event :-</Text>
-          <Text style={{fontSize: 17}}>{timePeriod}</Text>
+          <Text style={styles.textInput}>{timePeriod}</Text>
           <Text style={styles.label}>Description:-</Text>
-          <Text style={{fontSize: 17}}>{description}</Text>
+          <Text style={styles.textInput}>{description}</Text>
         </View>
 
         <View style={styles.budget}>
@@ -207,8 +207,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textInput: {
+    color: colors.gray,
+    fontSize: 17,
+  },
 });
 
 export default PlastIndia;
-
-// export default PlastIndia;
