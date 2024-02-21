@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,15 @@ import {
   ScrollView,
 } from 'react-native';
 import api from '../utils/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../styles/colors';
+import {AuthContext} from '../contexts/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Status() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const uploadTime = new Date().toLocaleString();
+  const {imgID} = useContext(AuthContext);
 
   useEffect(() => {
     fetchImages();
@@ -23,21 +25,22 @@ function Status() {
 
   const fetchImages = async () => {
     const accessToken = await AsyncStorage.getItem('userToken');
+    // console.log(imgID, '=========');
     try {
       setLoading(true);
-      const response = await api.get('/requirement/accepted', {
+      const response = await api.get(`requirement/get/${imgID}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const responseData = response.data.userRequirements;
+      const responseData = response.data.userRequirement;
+      // console.log(responseData, '--->----');
 
       // Extracting progress links from the responseData
-      const progressLinks = responseData
-        .map(requirement => requirement.acceptedBy.progress)
-        .flat();
-
-      console.log(progressLinks, 'gautam lunvh karne chalo');
+      const progressLinks = responseData.acceptedBy
+        ? responseData.acceptedBy.progress || []
+        : [];
+      // console.log(progressLinks, 'gautam lunvh karne chalo');
       setImages(progressLinks);
       setLoading(false);
     } catch (error) {
@@ -77,26 +80,25 @@ function Status() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 400,
   },
   uploadTime: {
     color: colors.black,
+    marginVertical: 10,
+    alignItems: 'center',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
+    justifyContent: 'center',
+    flexWrap: 'wrap',
   },
   image: {
     width: 150,
     height: 150,
     resizeMode: 'cover',
     borderRadius: 5,
-    margin: 5,
+    margin: 10,
   },
   loader: {
     position: 'absolute',

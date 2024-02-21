@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,7 @@ import {AuthContext} from '../contexts/AuthContext';
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageshow, setImageshow] = useState(null);
-  const {fabriID} = useContext(AuthContext);
+  const {fabriID, setimgID} = useContext(AuthContext);
 
   const uploadImageHandler = async () => {
     try {
@@ -47,7 +47,8 @@ function Upload() {
         },
       );
 
-      console.log(response, 'data');
+      const imgID = response.data.userRequirement._id;
+      setimgID(imgID);
       Alert.alert('Image Upload Successfully');
       setImageshow('');
     } catch (error) {

@@ -11,6 +11,7 @@ const AuthProvider = ({children}) => {
   const [fabriID, setfabriID] = useState(null);
   const [expoID, setExpoID] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [imgID, setimgID] = useState(null);
 
   const incrementNotificationCount = count => {
     setNotificationCount(prevCount => prevCount + count);
@@ -82,6 +83,8 @@ const AuthProvider = ({children}) => {
         notificationCount,
         incrementNotificationCount,
         clearNotificationCount,
+        imgID,
+        setimgID,
       }}>
       {children}
     </AuthContext.Provider>
