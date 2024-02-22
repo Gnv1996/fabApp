@@ -69,7 +69,6 @@ function Upload() {
 
   const fetchImages = async () => {
     const accessToken = await AsyncStorage.getItem('userToken');
-    // console.log(imgID, '=========');
     try {
       setLoading(true);
       const response = await api.get(`requirement/get/${fabriID}`, {
@@ -90,6 +89,27 @@ function Upload() {
     }
   };
 
+  const removeImageHandler = async index => {
+    try {
+      const removedImage = images[index];
+      const response = await api.put(`requirement/remove/${fabriID}`, {
+        data: {imageUrl: removedImage},
+      });
+      Alert.alert('Success', 'Image Removed Successfully', [
+        {
+          text: 'OK',
+          onPress: () => {
+            const updatedImages = [...images];
+            updatedImages.splice(index, 1);
+            setImages(updatedImages);
+          },
+        },
+      ]);
+    } catch (error) {
+      console.error('Error removing image:', error);
+    }
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -102,6 +122,11 @@ function Upload() {
         {imageshow && (
           <View style={{alignItems: 'center', marginTop: 20}}>
             <Image source={{uri: imageshow}} style={styles.selectedImage} />
+            <TouchableOpacity
+              onPress={() => setSelectedImage(null)}
+              style={styles.deleteButton}>
+              <Text style={styles.deleteButtonText}>X</Text>
+            </TouchableOpacity>
           </View>
         )}
         <TouchableOpacity
@@ -122,11 +147,14 @@ function Upload() {
             />
           ) : (
             images.map((imageUrl, index) => (
-              <Image
-                key={index}
-                source={{uri: imageUrl}}
-                style={styles.image}
-              />
+              <View key={index} style={{position: 'relative'}}>
+                <Image source={{uri: imageUrl}} style={styles.image} />
+                <TouchableOpacity
+                  onPress={() => removeImageHandler(index)}
+                  style={styles.deleteButton}>
+                  <Text style={styles.deleteButtonText}>X</Text>
+                </TouchableOpacity>
+              </View>
             ))
           )}
         </View>
@@ -220,6 +248,21 @@ const styles = StyleSheet.create({
     margin: 25,
     padding: 10,
     textAlign: 'center',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'red',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: colors.white,
+    fontSize: 20,
   },
 });
 
