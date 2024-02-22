@@ -90,11 +90,18 @@ function Upload() {
   };
 
   const removeImageHandler = async index => {
+    const accessToken = await AsyncStorage.getItem('userToken');
     try {
       const removedImage = images[index];
-      const response = await api.put(`requirement/remove/${fabriID}`, {
-        data: {imageUrl: removedImage},
-      });
+      const response = await api.put(
+        `requirement/remove/${fabriID}?index=${index}`,
+        {imageUrl: removedImage},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
       Alert.alert('Success', 'Image Removed Successfully', [
         {
           text: 'OK',
