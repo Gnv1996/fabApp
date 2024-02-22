@@ -44,6 +44,7 @@ function LoginScreen({navigation}) {
         await AsyncStorage.setItem('userToken', accessToken);
         await AsyncStorage.setItem('userEmail', user.email);
         await AsyncStorage.setItem('userFullName', user.fullname);
+        await AsyncStorage.setItem('userID', user._id);
 
         handleLogin(accessToken);
       } else {
@@ -51,12 +52,12 @@ function LoginScreen({navigation}) {
         Alert.alert(response, 'Error');
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setError('An error occurred during login.');
       if (error?.response) {
         Alert.alert('Error', error.response.data.message);
       }
-      console.log(error?.response?.data?.message, '->->->->');
+      // console.log(error?.response?.data?.message, '->->->->');
     } finally {
       setLoading(false);
       setTimeout(() => {

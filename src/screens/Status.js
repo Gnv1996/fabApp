@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,13 @@ import {
 } from 'react-native';
 import api from '../utils/api';
 import colors from '../styles/colors';
-import {AuthContext} from '../contexts/AuthContext';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Status() {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const uploadTime = new Date().toLocaleString();
-  const {imgID} = useContext(AuthContext);
+  const [uploadTime, setUploadTime] = useState('');
 
   useEffect(() => {
     fetchImages();
@@ -25,28 +24,34 @@ function Status() {
 
   const fetchImages = async () => {
     const accessToken = await AsyncStorage.getItem('userToken');
-    // console.log(imgID, '=========');
+    const imgID = await AsyncStorage.getItem('userID');
+
     try {
       setLoading(true);
-      const response = await api.get(`requirement/get/${imgID}`, {
+      const response = await api.get(`/requirement/all/fetch`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const responseData = response.data.userRequirement;
-      // console.log(responseData, '--->----');
+      const responseData = response.data.requirements;
 
-      // Extracting progress links from the responseData
-      const progressLinks = responseData.acceptedBy
-        ? responseData.acceptedBy.progress || []
-        : [];
-      // console.log(progressLinks, 'gautam lunvh karne chalo');
-      setImages(progressLinks);
-      setLoading(false);
+      const filteredData = responseData.filter(
+        requirement => requirement.userId === imgID && requirement.acceptedBy,
+      );
+
+      if (filteredData.length > 0) {
+        const progressLinks = filteredData[0].acceptedBy.progress || [];
+        setImages(progressLinks);
+      } else {
+        console.log('No progress links found for the user.');
+      }
     } catch (error) {
       console.error('Error fetching images:', error);
+    } finally {
       setLoading(false);
     }
+
+    setUploadTime(new Date().toLocaleString());
   };
 
   return (

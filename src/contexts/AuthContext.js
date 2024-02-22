@@ -11,7 +11,6 @@ const AuthProvider = ({children}) => {
   const [fabriID, setfabriID] = useState(null);
   const [expoID, setExpoID] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
-  const [imgID, setimgID] = useState(null);
 
   const incrementNotificationCount = count => {
     setNotificationCount(prevCount => prevCount + count);
@@ -56,7 +55,8 @@ const AuthProvider = ({children}) => {
     AsyncStorage.removeItem('userEmail');
     AsyncStorage.removeItem('ForgetToken');
     AsyncStorage.removeItem('OtpToken');
-    AsyncStorage.removeItem('ExpoId')
+    AsyncStorage.removeItem('ExpoId');
+    AsyncStorage.removeItem('userID')
 
       .then(() => {
         setUserLoggedIn(false);
@@ -83,8 +83,6 @@ const AuthProvider = ({children}) => {
         notificationCount,
         incrementNotificationCount,
         clearNotificationCount,
-        imgID,
-        setimgID,
       }}>
       {children}
     </AuthContext.Provider>

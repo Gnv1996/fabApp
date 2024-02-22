@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,21 @@ import {
   Image,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import api from '../utils/api';
 import colors from '../styles/colors';
 import {AuthContext} from '../contexts/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Upload() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageshow, setImageshow] = useState(null);
-  const {fabriID, setimgID} = useContext(AuthContext);
+  const {fabriID} = useContext(AuthContext);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const uploadTime = new Date().toLocaleString();
 
   const uploadImageHandler = async () => {
     try {
@@ -26,7 +31,6 @@ function Upload() {
       console.log('Picked document:', doc);
       setSelectedImage(doc[0]);
       setImageshow(doc[0].uri);
-      // console.log(doc[0], '---data---');
     } catch (error) {
       console.error('Error picking document:', error);
     }
@@ -46,13 +50,43 @@ function Upload() {
           },
         },
       );
+      Alert.alert('Success', 'Image Upload Successfully', [
+        {
+          text: 'OK',
+          onPress: () => fetchImages(),
+        },
+      ]);
 
-      const imgID = response.data.userRequirement._id;
-      setimgID(imgID);
-      Alert.alert('Image Upload Successfully');
       setImageshow('');
     } catch (error) {
       console.log('Error in Upload Image');
+    }
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+  const fetchImages = async () => {
+    const accessToken = await AsyncStorage.getItem('userToken');
+    // console.log(imgID, '=========');
+    try {
+      setLoading(true);
+      const response = await api.get(`requirement/get/${fabriID}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const responseData = response.data.userRequirement;
+
+      const progressLinks = responseData.acceptedBy
+        ? responseData.acceptedBy.progress || []
+        : [];
+      setImages(progressLinks);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      setLoading(false);
     }
   };
 
@@ -75,6 +109,29 @@ function Upload() {
           onPress={submitImagesHandler}>
           <Text style={{color: colors.white}}>Submit</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.containers}>
+        <Text style={styles.heading}>Upload Images</Text>
+        <View style={styles.row}>
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color="blue"
+              style={styles.loader}
+            />
+          ) : (
+            images.map((imageUrl, index) => (
+              <Image
+                key={index}
+                source={{uri: imageUrl}}
+                style={styles.image}
+              />
+            ))
+          )}
+        </View>
+
+        <Text style={styles.uploadTime}>Uploaded Time: {uploadTime}</Text>
       </View>
     </ScrollView>
   );
@@ -111,6 +168,58 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 20,
+  },
+  containers: {
+    flex: 1,
+  },
+  uploadTime: {
+    color: colors.black,
+    marginVertical: 10,
+    alignItems: 'center',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  image: {
+    width: 150,
+    height: 150,
+    resizeMode: 'cover',
+    borderRadius: 5,
+    margin: 10,
+  },
+  loader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  layoutText: {
+    borderWidth: 2,
+    borderColor: colors.gray,
+    padding: 15,
+    borderRadius: 10,
+    margin: 20,
+    color: colors.black,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 27,
+  },
+  heading: {
+    fontSize: 20,
+    color: colors.black,
+    fontWeight: 'bold',
+    borderBottomWidth: 2,
+    margin: 25,
+    padding: 10,
+    textAlign: 'center',
   },
 });
 
