@@ -23,20 +23,20 @@ function Requirement() {
   const {UsersID} = useContext(AuthContext);
 
   useEffect(() => {
+    const fetchDataFromApi = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/requirement/get/${UsersID}`);
+        setApiData(response.data.userRequirement);
+      } catch (error) {
+        console.error('Error fetching data from API:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchDataFromApi();
   }, []);
-
-  const fetchDataFromApi = async () => {
-    try {
-      const response = await api.get(`/requirement/get/${UsersID}`);
-      console.log(response, '------------------');
-      setApiData(response.data.userRequirement);
-    } catch (error) {
-      console.error('Error fetching data from API:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const buttonAcceptHandler = async () => {
     const accessToken = await AsyncStorage.getItem('userToken');
@@ -51,30 +51,26 @@ function Requirement() {
         Alert.alert('You Accepted Fabrication Successfully');
       }
 
-      fetchDataFromApi();
+      // fetchDataFromApi();
     } catch (error) {
       console.error('Error accepting requirement:', error);
-      Alert.alert('Error accepting requirement. Please try again.');
+      Alert.alert(error, 'Error accepting requirement. Please try again.');
     }
+    fetchDataFromApi();
   };
 
   const buttonRejectHandler = async () => {
-    try {
-      await api.put(`/requirement/reject/${UsersID}`);
-
-      // Show success alert
-      Alert.alert('You Rejected! Successfully');
-
-      // Refetch data from API
-      fetchDataFromApi();
-
-      // Navigate to Notifications screen
-      navigation.navigate('Notifications');
-    } catch (error) {
-      console.error('Error rejecting requirement:', error);
-      // Show error alert if API call fails
-      Alert.alert('Error rejecting requirement. Please try again.');
-    }
+    // try {
+    //   await api.put(`/requirement/reject/${UsersID}`);
+    //   Alert.alert('You Rejected! Successfully');
+    //   navigation.navigate('Notification');
+    // } catch (error) {
+    //   console.error('Error rejecting requirement:', error);
+    //   Alert.alert(error, 'Error rejecting requirement. Please try again.');
+    //   navigation.navigate('Notification');
+    // }
+    navigation.navigate('Notification');
+    // fetchDataFromApi();
   };
 
   const keyMapping = {

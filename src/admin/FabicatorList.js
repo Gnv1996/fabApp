@@ -7,7 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import {Table, Row} from 'react-native-table-component';
+import {Table, Row,textStyle} from 'react-native-table-component';
 import colors from '../styles/colors';
 import api from '../utils/api';
 

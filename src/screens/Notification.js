@@ -36,11 +36,12 @@ function Notification({navigation}) {
       }
     };
 
-    const timeout = setTimeout(() => {
+    const interval = setInterval(() => {
+      setLoading(true);
       fetchData();
     }, 2000);
 
-    return () => clearTimeout(timeout);
+    return () => clearTimeout(interval);
   }, [incrementNotificationCount]);
 
   const handleViewClick = id => {
