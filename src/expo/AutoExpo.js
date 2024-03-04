@@ -54,12 +54,12 @@ function AutoExpo() {
     );
   }
 
-  const buttonAcceptHandler = () => {
-    navigation.navigate('ReqForm');
-  };
-  const buttonRejectHandler = () => {
-    Alert.alert('Please Explore App');
-  };
+  // const buttonAcceptHandler = () => {
+  //  Alert.alert("No Action Required")
+  // };
+  // const buttonRejectHandler = () => {
+  //   Alert.alert('Please Explore App');
+  // };
 
   const {eventDate, venue, timePeriod, description} = eventData;
 
@@ -85,7 +85,7 @@ function AutoExpo() {
           <Text style={styles.textInput}>{description}</Text>
         </View>
 
-        <View style={styles.budget}>
+        {/* <View style={styles.budget}>
           <TouchableOpacity
             style={styles.btnAccept}
             onPress={buttonAcceptHandler}>
@@ -97,7 +97,7 @@ function AutoExpo() {
             onPress={buttonRejectHandler}>
             <Text style={styles.btn_Text}>Reject</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
       <View>
         <View
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: colors.white,
     padding: 10,
+    borderRadius: 7,
   },
   eventImage: {
     width: 330,
@@ -164,20 +165,7 @@ const styles = StyleSheet.create({
     color: colors.black,
     marginVertical: 5,
   },
-  btnAccept: {
-    backgroundColor: colors.green,
-    flex: 1,
-    padding: 10,
-    borderRadius: 5,
-    margin: 5,
-  },
-  btnReject: {
-    backgroundColor: colors.red,
-    flex: 1,
-    padding: 10,
-    borderRadius: 5,
-    margin: 5,
-  },
+
   btn_Text: {
     textAlign: 'center',
     color: colors.white,
